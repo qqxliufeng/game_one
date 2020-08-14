@@ -1,0 +1,36 @@
+{
+  "ver": "2.3.5",
+  "uuid": "90f3a337-9ae8-462b-8436-12612f7ed0aa",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 836,
+  "height": 682,
+  "platformSettings": {},
+  "subMetas": {
+    "pic_wg_maomi": {
+      "ver": "1.0.4",
+      "uuid": "09431526-284d-4032-87f4-21744ce3b77c",
+      "rawTextureUuid": "90f3a337-9ae8-462b-8436-12612f7ed0aa",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 2,
+      "trimX": 1,
+      "trimY": 2,
+      "width": 834,
+      "height": 674,
+      "rawWidth": 836,
+      "rawHeight": 682,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
