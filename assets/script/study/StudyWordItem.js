@@ -36,7 +36,7 @@ cc.Class({
   setContentSize(size) {
     this.node.setContentSize(parseInt(size.width), parseInt(size.height))
     this.node.getChildByName('button').setContentSize(parseInt(size.width), parseInt(size.height))
-    this.node.getChildByName('button').on('click', this.setOnClickListener)
+    this.node.getChildByName('button').on('click', this.setOnClickListener.bind(this))
   },
 
   setPosition(position = new cc.v2(0, 0)) {
@@ -49,7 +49,6 @@ cc.Class({
   },
 
   setOnClickListener() {
-    console.log('asdfasfd')
     this.clickCallBack && this.clickCallBack(this.node.getChildByName('word').getComponent(cc.Label).string)
   },
 

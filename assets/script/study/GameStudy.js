@@ -11,7 +11,10 @@ const ITEMS = [
     position: cc.v2(0, -10),
     label: '',
     bigItem: {
-      scale: 0.8
+      scale: 0.8,
+      textFont: {
+        position: cc.v2(0, 50)
+      }
     }
   },
   {
@@ -20,7 +23,10 @@ const ITEMS = [
     position: cc.v2(0, 0),
     label: '',
     bigItem: {
-      scale: 0.8
+      scale: 0.8,
+      textFont: {
+        position: cc.v2(0, 0)
+      }
     }
   },
   {
@@ -29,7 +35,10 @@ const ITEMS = [
     position: cc.v2(0, 0),
     label: '',
     bigItem: {
-      scale: 0.7
+      scale: 0.7,
+      textFont: {
+        position: cc.v2(0, 0)
+      }
     }
   },
   {
@@ -38,7 +47,10 @@ const ITEMS = [
     position: cc.v2(0, 0),
     label: '',
     bigItem: {
-      scale: 0.6
+      scale: 0.6,
+      textFont: {
+        position: cc.v2(0, 0)
+      }
     }
   },
   {
@@ -47,7 +59,10 @@ const ITEMS = [
     position: cc.v2(0, -20),
     label: '',
     bigItem: {
-      scale: 0.6
+      scale: 0.6,
+      textFont: {
+        position: cc.v2(0, -100)
+      }
     }
   },
   {
@@ -56,7 +71,10 @@ const ITEMS = [
     position: cc.v2(0, 0),
     label: '',
     bigItem: {
-      scale: 0.7
+      scale: 0.7,
+      textFont: {
+        position: cc.v2(0, 0)
+      }
     }
   }
 ]
@@ -104,7 +122,6 @@ cc.Class({
             position: item.position
           },
           clickCallBack: (text) => {
-            console.log(text)
             this.bigWord.refresh({
               textFont: {
                 label: text
@@ -127,7 +144,8 @@ cc.Class({
         position: cc.v2(0, -200),
         scale: item.bigItem.scale,
         textFont: {
-          color: item.color
+          color: item.color,
+          position: item.bigItem.textFont.position
         }
       })
     })

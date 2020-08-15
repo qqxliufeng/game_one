@@ -24,7 +24,6 @@ cc.Class({
 
   refresh(params) {
     this.scheduleOnce(() => {
-      console.log('refresh')
       this.setTextFont(params ? params.textFont : null)
       this.setScale()
       this.scaleTween()
@@ -42,6 +41,7 @@ cc.Class({
   setTextFont(textFont = {}) {
     if (!textFont) return
     if (textFont && textFont.color && textFont.color instanceof cc.Color) this.word.color = textFont.color
+    if (textFont.position) this.word.setPosition(textFont.position || cc.v2(0, 0))
     this.word.getComponent(cc.Label).string = textFont.label || '优'
   },
 
