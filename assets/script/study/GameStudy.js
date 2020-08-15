@@ -19,7 +19,7 @@ const ITEMS = [
     bigItem: {
       scale: 0.8,
       textFont: {
-        position: cc.v2(0, 50)
+        position: cc.v2(0, -50)
       }
     }
   },
