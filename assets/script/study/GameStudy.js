@@ -1,9 +1,15 @@
+// 每行的个数
 const ROW_WORD_COUNT = 3
 
+// 上下行之间的间距
 const VERTICAL_SPACE = 80
 
+// 默认条目的宽度
 const DEFAULT_ITEM_WIDTH = 110
 
+/**
+ * 每个条目的数据结构
+ */
 const ITEMS = [
   {
     sprite: 'pic_zx_apple',
