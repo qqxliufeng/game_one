@@ -16,6 +16,7 @@ const ITEMS = [
     color: new cc.Color(255, 255, 255),
     position: cc.v2(0, -10),
     label: '',
+    type: 'apple',
     bigItem: {
       scale: 0.8,
       textFont: {
@@ -28,6 +29,7 @@ const ITEMS = [
     color: new cc.Color(255, 255, 255),
     position: cc.v2(0, 0),
     label: '',
+    type: 'book',
     bigItem: {
       scale: 0.8,
       textFont: {
@@ -40,6 +42,7 @@ const ITEMS = [
     color: new cc.Color(255, 255, 255),
     position: cc.v2(0, 0),
     label: '',
+    type: 'car',
     bigItem: {
       scale: 0.7,
       textFont: {
@@ -52,6 +55,7 @@ const ITEMS = [
     color: new cc.Color(255, 255, 255),
     position: cc.v2(0, 0),
     label: '',
+    type: 'flower',
     bigItem: {
       scale: 0.6,
       textFont: {
@@ -64,6 +68,7 @@ const ITEMS = [
     color: new cc.Color(0, 0, 0),
     position: cc.v2(0, -20),
     label: '',
+    type: 'mushroom',
     bigItem: {
       scale: 0.6,
       textFont: {
@@ -76,10 +81,11 @@ const ITEMS = [
     color: new cc.Color(255, 255, 255),
     position: cc.v2(0, 0),
     label: '',
+    type: 'sun',
     bigItem: {
       scale: 0.7,
       textFont: {
-        position: cc.v2(0, 0)
+        position: cc.v2(0, 20)
       }
     }
   }
@@ -129,6 +135,7 @@ cc.Class({
           },
           clickCallBack: (text) => {
             this.bigWord.refresh({
+              type: item.type,
               textFont: {
                 label: text
               }
