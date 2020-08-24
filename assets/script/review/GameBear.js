@@ -1,3 +1,4 @@
+const { WORD_ITEM_WIDTH } = require("../utils/globals");
 
 const PRE_FAB_NAME = 'prefab/word_item'
 const SPRITE_NAME = 'texture/pic_wg_guanzi'
@@ -10,7 +11,7 @@ cc.Class({
       type: cc.Node,
       default: null
     },
-    bear: {
+    animal: {
       type: cc.Node,
       default: null
     },
@@ -26,51 +27,70 @@ cc.Class({
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
-    cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
-      this.initPrefab(cc.instantiate(assets), 'left')
-    })
-    cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
-      this.initPrefab(cc.instantiate(assets), 'right')
-    })
-  },
-
-  initPrefab(bear, position) {
     cc.resources.load(SPRITE_NAME, cc.SpriteFrame, (error, sprite) => {
-      this.parent.addChild(bear)
-      const script = bear.getComponent('WordItem')
-      script.init({
-        position,
-        sprite,
-        textColor: new cc.Color(255, 255, 255),
-        callback: () => {
-          if (this.bear.getComponent('CollideListener').canEat()) {
-            this.success(bear)
-          } else {
-            script.backTween()
-          }
-        }
+      const width = WORD_ITEM_WIDTH
+      const height = parseInt(WORD_ITEM_WIDTH * sprite.getRect().height / sprite.getRect().width)
+      cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
+        this.initPrefab(cc.instantiate(assets), {
+          x: (this.node.x - this.parent.width / 2) + sprite.getRect().width / 3 * 2,
+          y: (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2,
+          width,
+          height
+        }, sprite)
+      })
+      cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
+        this.initPrefab(cc.instantiate(assets), {
+          x: (this.node.x + this.parent.width / 2) - sprite.getRect().width / 3 * 2,
+          y: (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2,
+          width,
+          height
+        }, sprite)
       })
     })
   },
 
-  success(bear) {
-    cc.tween(bear).to(0.5, { position: cc.v2(-150, 85), scale: 0 }, { easing: 'fade' }).call(() => {
-      bear.active = false
+  initPrefab(word, position, sprite) {
+    this.parent.addChild(word)
+    const script = word.getComponent('WordItem')
+    script.init({
+      parentParams: {
+        x: position.x,
+        y: position.y,
+        width: position.width,
+        height: position.height,
+        scale: 0.5
+      },
+      spriteParams: {
+        spriteFrame: sprite
+      },
+      textParams: {
+        label: '王',
+        fontSize: 80,
+        color: new cc.Color(255, 255, 255),
+        x: 0,
+        y: -20
+      },
+      otherParams: {
+        callback: () => {
+          if (this.animal.getComponent('CollideListener').canEat()) {
+            this.success(word)
+          } else {
+            this.error(script)
+          }
+        }
+      }
+    })
+  },
+
+  success(word) {
+    cc.tween(word).to(0.5, { position: cc.v2(-150, 85), scale: 0 }, { easing: 'fade' }).call(() => {
+      word.active = false
       cc.audioEngine.play(this.successTip, false, 1)
     }).start()
   },
 
-  errorFish(script) {
+  error(script) {
     script.backTween()
     cc.audioEngine.play(this.errorTip, false, 1)
-  },
-
-  start() { },
-
-  // update (dt) {},
-
-  onDestroy() {
-    cc.resources.releaseAll()
   }
-
 });

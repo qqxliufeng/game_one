@@ -2,7 +2,6 @@ cc.Class({
   extends: cc.Component,
 
   onLoad() {
-    this.defaultScale = this.node.scale
     this.node.on(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this)
     this.node.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this)
     this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.touchEnd, this)
@@ -31,65 +30,73 @@ cc.Class({
    * @param {*} params 
    */
   init(params) {
-    this.setSpriteFrame(params.sprite)
-    this.setTextFont(params.textColor)
-    this.setPosition(params.position)
-    this.setTouchResultCallBack(params.callback)
-    this.setWordPosition(params.wordPosition)
+    this.scheduleOnce(() => {
+      this.setParentParams(params.parentParams)
+      this.setSpriteParams(params.spriteParams)
+      this.setTextParams(params.textParams)
+      this.setOtherParams(params.otherParams)
+    })
   },
 
   /**
-   * 设置触摸之后的回调函数
+   * 设置父元素的信息：
+   * 位置，偏移量
+   * 大小
+   * 缩放
    * @param {*} callback 
    */
-  setTouchResultCallBack(callback) {
-    this.callback = callback
-  },
-
-  /**
-   * 设置字的背景图片
-   * @param {*} sprite 
-   */
-  setSpriteFrame(sprite) {
-    this.getComponent(cc.Sprite).spriteFrame = sprite
+  setParentParams({ x = 0, y = 0, width = 100, height = 100, padding = 0, scale = 1 }) {
+    this.node.x = x + padding
+    this.node.y = y + padding
+    this.node.setContentSize(width, height)
+    this.node.scale = scale
     this.node.addComponent(cc.BoxCollider)
-  },
-
-  /**
-   * 设置文字颜色
-   * @param {*} textColor 
-   */
-  setTextFont(textColor = new cc.Color(0, 0, 0)) {
-    this.scheduleOnce(() => {
-      this.node.getChildByName('word').color = textColor
-    }, 0)
-  },
-
-  /**
-   * 设置字的背景位置
-   * @param {*} position 
-   */
-  setPosition(position = 'left') {
-    if (position === 'left') {
-      this.node.x = (this.node.parent.x - this.node.parent.width / 2) + this.node.width / 2
-      this.node.y = (this.node.parent.y - this.node.parent.height / 2) + this.node.width / 2
-    } else {
-      this.node.x = (this.node.parent.x + this.node.parent.width / 2) - this.node.width / 2
-      this.node.y = (this.node.parent.y - this.node.parent.height / 2) + this.node.width / 2
-    }
     this.defaultPosition = this.node.getPosition()
+    this.defaultScale = this.node.scale
   },
 
   /**
-   * 设置文字的位置
-   * @param {}} position 
+   * 设置图片精灵信息：
+   * 图片
+   * @param {*} callback 
    */
-  setWordPosition(position = new cc.v2(0, 0)) {
-    this.node.getChildByName('word').setPosition(position)
+  setSpriteParams({ spriteFrame }) {
+    this.getComponent(cc.Sprite).spriteFrame = spriteFrame
   },
 
-  start() {
+  /**
+   * 设置文字信息:
+   * 文字
+   * 位置
+   * 颜色
+   * 大小
+   * @param {*} callback 
+   */
+  setTextParams({ x = 0, y = 0, label = '', fontSize = 40, color = new cc.Color(0, 0, 0) }) {
+    const textNode = this.node.getChildByName('word')
+    const textComponent = textNode.getComponent(cc.Label)
+    textComponent.string = label
+    textComponent.fontSize = fontSize
+    textNode.setPosition(x, y)
+    textNode.color = color
   },
 
-  // update (dt) {},
+  /**
+   * 单独设置一下文本字
+   * @param {*} otherParams 
+   */
+  setText(label = '') {
+    const textNode = this.node.getChildByName('word')
+    const textComponent = textNode.getComponent(cc.Label)
+    textComponent.string = label
+  },
+
+  /**
+   * 设置其它信息：
+   * 触摸之后的回调函数
+   * @param {*} callback 
+   */
+  setOtherParams(otherParams) {
+    this.callback = otherParams.callback
+  }
 });

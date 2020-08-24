@@ -43,8 +43,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 414,
-      "height": 180
+      "width": 100,
+      "height": 100
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -107,7 +107,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 0,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -160,8 +160,8 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "鱼",
-    "_N$string": "鱼",
+    "_string": "",
+    "_N$string": "",
     "_fontSize": 80,
     "_lineHeight": 80,
     "_enableWrapText": true,

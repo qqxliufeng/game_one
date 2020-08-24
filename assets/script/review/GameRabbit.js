@@ -1,91 +1,100 @@
+const { WORD_ITEM_WIDTH, getReviewScene } = require("../utils/globals");
+
+const PRE_FAB_NAME = 'prefab/word_item'
+const SPRITE_NAME = 'texture/pic_wg_megu'
+
 cc.Class({
   extends: cc.Component,
 
   properties: {
-    mushroomOne: {
+    parent: {
       type: cc.Node,
       default: null
     },
-    mushroomTwo: {
+    animal: {
       type: cc.Node,
       default: null
     },
-    rabbit: {
-      type: cc.Node,
-      default: null
-    },
-    successClip: {
+    successTip: {
       type: cc.AudioClip,
       default: null
     },
-    errorClip: {
+    errorTip: {
       type: cc.AudioClip,
       default: null
     }
   },
 
   onLoad() {
-    this.init()
     cc.director.getCollisionManager().enabled = true
-    // cc.director.getCollisionManager().enabledDebugDraw = true
-    this.setTouchEvent(this.mushroomOne, this.mushroomOne.getPosition())
-    this.setTouchEvent(this.mushroomTwo, this.mushroomTwo.getPosition())
-    this.rabbit.on(cc.Node.EventType.TOUCH_END, () => {
-      this.rabbit.getComponent(cc.AudioSource).play()
-    }, this)
+    cc.resources.load(SPRITE_NAME, cc.SpriteFrame, (error, sprite) => {
+      this.spriteFrame = sprite
+      // this.spriteFrame.addRef()
+      console.log(this.spriteFrame)
+      const width = WORD_ITEM_WIDTH
+      const height = parseInt(WORD_ITEM_WIDTH * sprite.getRect().height / sprite.getRect().width)
+      cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
+        this.initPrefab(cc.instantiate(assets), {
+          x: (this.node.x - this.parent.width / 2) + sprite.getRect().width / 2,
+          y: (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2,
+          width,
+          height
+        }, sprite)
+      })
+      cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
+        this.initPrefab(cc.instantiate(assets), {
+          x: (this.node.x + this.parent.width / 2) - sprite.getRect().width / 2,
+          y: (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2,
+          width,
+          height
+        }, sprite)
+      })
+    })
   },
 
-  init() {
-    this.correctWord = '荣'
-    this.errorWord = '耀'
-    this.rabbit.getChildByName('word').getComponent(cc.Label).string = this.correctWord
-    this.mushroomOne.getChildByName('word').getComponent(cc.Label).string = this.correctWord
-    this.mushroomTwo.getChildByName('word').getComponent(cc.Label).string = this.errorWord
-  },
-
-  /**
-   * 设置触摸监听事件
-   * @param {*} node 
-   * @param {*} defaultPosition 
-   */
-  setTouchEvent(node, defaultPosition) {
-    node.on(cc.Node.EventType.TOUCH_MOVE, (event) => {
-      node.setPosition(node.x + event.getDeltaX(), node.y + event.getDeltaY())
-      node.scale = Math.min(0.7, Math.max(0.3, 1 - cc.v2(node.x, node.y).sub(cc.v2(defaultPosition.x, defaultPosition.y)).len() / 500))
-    }, this)
-    node.on(cc.Node.EventType.TOUCH_END, this.touchEndResult.bind(this, node, defaultPosition), this)
-    node.on(cc.Node.EventType.TOUCH_CANCEL, this.touchEndResult.bind(this, node, defaultPosition), this)
-  },
-
-  /**
-   * 当触摸事件完成之后，首先会判断是不是在指定的区域中，如果在区域中，再判断单词是否正确
-   * @param {*} node 
-   * @param {*} defaultPosition 
-   */
-  touchEndResult(node, defaultPosition) {
-    const canEat = this.rabbit.getComponent('CollideListener').canEat()
-    if (canEat) {
-      if (node.getChildByName('word').getComponent(cc.Label).string === this.correctWord) {
-        const anim = this.rabbit.getComponent(cc.Animation)
-        anim.play('rabbit').repeatCount = 3
-        node.active = false
-        cc.audioEngine.play(this.successClip, false, 1)
-      } else {
-        this.backTween(node, defaultPosition)
+  initPrefab(word, position, sprite) {
+    this.parent.addChild(word)
+    const script = word.getComponent('WordItem')
+    script.init({
+      parentParams: {
+        x: position.x,
+        y: position.y,
+        width: position.width,
+        height: position.height,
+        scale: 0.5
+      },
+      spriteParams: {
+        spriteFrame: sprite
+      },
+      textParams: {
+        label: '王',
+        fontSize: 80,
+        color: new cc.Color(0, 0, 0),
+        y: -50
+      },
+      otherParams: {
+        callback: () => {
+          if (this.animal.getComponent('CollideListener').canEat()) {
+            this.success(word)
+            cc.director.loadScene(getReviewScene())
+          } else {
+            this.error(script)
+          }
+        }
       }
-    } else {
-      this.backTween(node, defaultPosition)
-    }
+    })
   },
 
-  backTween(node, defaultPosition) {
-    cc.audioEngine.play(this.errorClip, false, 1)
-    cc.tween(node).to(1, { position: defaultPosition, scale: 0.7 }, { easing: 'elasticOut' }).start()
+  success(word) {
+    word.active = false
+    cc.audioEngine.play(this.successTip, false, 1)
+    const animation = this.animal.getComponent(cc.Animation)
+    const animationState = animation.play()
+    animationState.repeatCount = 4
   },
 
-  start() {
-
-  },
-
-  // update (dt) {},
+  error(script) {
+    script.backTween()
+    cc.audioEngine.play(this.errorTip, false, 1)
+  }
 });

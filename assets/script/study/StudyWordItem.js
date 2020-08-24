@@ -30,7 +30,6 @@ cc.Class({
       this.setTextFont(params.textFont)
       this.clickCallBack = params.clickCallBack
     }, 0)
-
   },
 
   setContentSize(size) {
