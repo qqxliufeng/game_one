@@ -73,7 +73,6 @@ const TOP_ITEM_LINE_COUNT = 4
 
 const BOTTOM_ITEM_LINE_COUNT = 2
 
-const TOP_ITEMS = []
 const BOTTOM_ITEMS = []
 
 function getItemName() {
@@ -104,7 +103,6 @@ cc.Class({
     for (let i = 0; i < TOP_ITEM_LINE_COUNT; i++) {
       cc.resources.load(WORD_PRE_FAB_NAME, cc.Prefab, (error, assets) => {
         const wordItem = cc.instantiate(assets)
-        TOP_ITEMS.push(wordItem)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
           const size = getSpriteSize(spriteFrame)
           this.initPrefab(wordItem, {
@@ -127,7 +125,6 @@ cc.Class({
     for (let i = 0; i < BOTTOM_ITEM_LINE_COUNT * 2; i++) {
       cc.resources.load(WORD_PRE_FAB_NAME, cc.Prefab, (error, assets) => {
         const wordItem = cc.instantiate(assets)
-        BOTTOM_ITEMS.push(wordItem)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
           const size = getSpriteSize(spriteFrame)
           const div = parseInt(i / BOTTOM_ITEM_LINE_COUNT)
