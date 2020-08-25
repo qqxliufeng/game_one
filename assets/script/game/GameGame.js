@@ -3,24 +3,44 @@ const { WORD_ITEM_WIDTH } = require("../utils/globals")
 const PRE_FAB_NAME = 'prefab/word_item'
 
 const GAME_ITEM_LIST = [
-  // {
-  //   animalName: 'rabbit',
-  //   foodName: 'carrot',
-  //   bg: 'four',
-  //   color: new cc.Color(0, 0, 0),
-  //   animalOption: {
-  //     scale: 0.8
-  //   }
-  // },
-  // {
-  //   animalName: 'dog',
-  //   foodName: 'bone',
-  //   bg: 'one',
-  //   color: new cc.Color(0, 0, 0),
-  //   animalOption: {
-  //     scale: 0.8
-  //   }
-  // },
+  {
+    animalName: 'rabbit',
+    foodName: 'carrot',
+    bg: 'four',
+    color: new cc.Color(0, 0, 0),
+    animalOption: {
+      scale: 0.8,
+      boxCollider: {
+        offsetX: 0.15,
+        offsetY: 0.12,
+        width: 1.2,
+        height: 1.2
+      }
+    },
+    font: {
+      x: 0,
+      y: 0
+    }
+  },
+  {
+    animalName: 'dog',
+    foodName: 'bone',
+    bg: 'one',
+    color: new cc.Color(0, 0, 0),
+    animalOption: {
+      scale: 0.8,
+      boxCollider: {
+        offsetX: -0.2,
+        offsetY: 0.22,
+        width: 1.2,
+        height: 1.2
+      }
+    },
+    font: {
+      x: 0,
+      y: 0
+    }
+  },
   {
     animalName: 'monkey',
     foodName: 'banana',
@@ -29,38 +49,78 @@ const GAME_ITEM_LIST = [
     animalOption: {
       scale: 0.7,
       x: 0.3,
-      y: 0.12
+      y: 0.12,
+      boxCollider: {
+        offsetX: 0.2,
+        offsetY: 0.15,
+        width: 1.15,
+        height: 1.15
+      }
+    },
+    font: {
+      x: 40,
+      y: -50
     }
   },
-  // {
-  //   animalName: 'mouse',
-  //   foodName: 'rice',
-  //   bg: 'three',
-  //   color: new cc.Color(0, 0, 0),
-  //   animalOption: {
-  //     scale: 0.7,
-  //     x: 0.3,
-  //     y: 0.12
-  //   }
-  // },
-  // {
-  //   animalName: 'sheep',
-  //   foodName: 'grass',
-  //   bg: 'one',
-  //   color: new cc.Color(255, 255, 255),
-  //   animalOption: {
-  //     scale: 0.8
-  //   }
-  // },
-  // {
-  //   animalName: 'bear',
-  //   foodName: 'pot',
-  //   bg: 'four',
-  //   color: new cc.Color(255, 255, 255),
-  //   animalOption: {
-  //     scale: 0.6
-  //   }
-  // }
+  {
+    animalName: 'mouse',
+    foodName: 'rice',
+    bg: 'three',
+    color: new cc.Color(0, 0, 0),
+    animalOption: {
+      scale: 0.7,
+      x: 0.3,
+      y: 0.12,
+      boxCollider: {
+        offsetX: 0.2,
+        offsetY: 0,
+        width: 2,
+        height: 1.15
+      }
+    },
+    font: {
+      x: 0,
+      y: -30
+    }
+  },
+  {
+    animalName: 'sheep',
+    foodName: 'grass',
+    bg: 'one',
+    color: new cc.Color(255, 255, 255),
+    animalOption: {
+      scale: 0.8,
+      boxCollider: {
+        offsetX: -0.23,
+        offsetY: 0.22,
+        width: 1.2,
+        height: 1.2
+      }
+    },
+    font: {
+      x: 0,
+      y: -30
+    }
+  },
+  {
+    animalName: 'bear',
+    foodName: 'pot',
+    bg: 'four',
+    color: new cc.Color(255, 255, 255),
+    animalOption: {
+      scale: 0.6,
+      boxCollider: {
+        offsetX: -0.15,
+        offsetY: 0.22,
+        width: 1.4,
+        height: 1.4
+      }
+    },
+    font: {
+      x: 0,
+      y: -30
+    }
+  }
 ]
 
 function getItemName() {
@@ -75,6 +135,8 @@ cc.Class({
   },
 
   onLoad() {
+    cc.director.getCollisionManager().enabled = true
+    cc.director.getCollisionManager().enabledDebugDraw = true
     this.itemInfo = getItemName()
     cc.resources.preload('texture/game/pic_chg_' + this.itemInfo.animalName + '_1', cc.spriteFrame)
     cc.resources.preload('texture/game/pic_chg_' + this.itemInfo.animalName + '_2', cc.spriteFrame)
@@ -91,19 +153,24 @@ cc.Class({
       cc.resources.load('texture/game/pic_chg_' + this.itemInfo.animalName + '_2', cc.SpriteFrame, (e1, spriteFrame2) => {
         this.animalSpriteTwo = spriteFrame2
         cc.resources.load('prefab/game_animal_item', cc.Prefab, (e2, assets) => {
-          const animalItem = cc.instantiate(assets)
-          this.parent.addChild(animalItem)
-          animalItem.scale = this.itemInfo.animalOption.scale
-          animalItem.x = this.itemInfo.animalOption.x ? this.parent.x - this.parent.width * this.itemInfo.animalOption.x : 0
-          animalItem.y = this.itemInfo.animalOption.x ? this.parent.y + this.parent.height * this.itemInfo.animalOption.y : 0
-          animalItem.getComponent(cc.Sprite).spriteFrame = spriteFrame
-          const animation = animalItem.getComponent(cc.Animation)
+          this.animalItem = cc.instantiate(assets)
+          this.parent.addChild(this.animalItem)
+          this.animalItem.scale = this.itemInfo.animalOption.scale
+          this.animalItem.x = this.itemInfo.animalOption.x ? this.parent.x - this.parent.width * this.itemInfo.animalOption.x : 0
+          this.animalItem.y = this.itemInfo.animalOption.x ? this.parent.y + this.parent.height * this.itemInfo.animalOption.y : 0
+          this.animalItem.getComponent(cc.Sprite).spriteFrame = spriteFrame
+          const animation = this.animalItem.getComponent(cc.Animation)
           if (this.animalSpriteTwo) {
+            //初始化动画效果
             const clip = cc.AnimationClip.createWithSpriteFrames([this.animalSpriteOne, this.animalSpriteTwo], 10)
             clip.name = 'animal_run'
-            clip.wrapMode = cc.WrapMode.Loop
             animation.addClip(clip)
-            animation.play(clip.name)
+            const animationState = animation.play(clip.name)
+            animationState.repeatCount = 4
+            //初始化碰撞组件
+            const boxCollider = this.animalItem.addComponent(cc.BoxCollider)
+            boxCollider.offset = cc.v2(this.animalItem.width * this.itemInfo.animalOption.boxCollider.offsetX, this.animalItem.height * this.itemInfo.animalOption.boxCollider.offsetY)
+            boxCollider.size = cc.size(boxCollider.size.width * this.itemInfo.animalOption.boxCollider.width, boxCollider.size.height * this.itemInfo.animalOption.boxCollider.height)
           }
         })
       })
@@ -146,16 +213,17 @@ cc.Class({
         label: '王',
         fontSize: 80,
         color: this.itemInfo.color,
-        x: 0,
-        y: -20
+        x: this.itemInfo.font.x || 0,
+        y: this.itemInfo.font.y || 0
       },
       otherParams: {
         callback: () => {
-          if (this.animal.getComponent('CollideListener').canEat()) {
-            this.success(word)
-          } else {
-            this.error(script)
-          }
+          script.backTween()
+          // if (this.animalItem.getComponent('CollideListener').canEat()) {
+          //   this.success(word)
+          // } else {
+          //   this.error(script)
+          // }
         }
       }
     })

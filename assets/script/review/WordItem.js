@@ -50,9 +50,10 @@ cc.Class({
     this.node.y = y + padding
     this.node.setContentSize(width, height)
     this.node.scale = scale
-    this.node.addComponent(cc.BoxCollider)
     this.defaultPosition = this.node.getPosition()
     this.defaultScale = this.node.scale
+    const boxCollider = this.node.addComponent(cc.BoxCollider)
+    boxCollider.size = cc.size(width * 2, height * 2)
   },
 
   /**

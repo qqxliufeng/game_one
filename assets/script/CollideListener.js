@@ -7,6 +7,7 @@ cc.Class({
   },
 
   onCollisionEnter(other, self) {
+    console.log('enter')
     this.isCollided = true
   },
   onCollisionStay(other, self) {
