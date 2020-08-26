@@ -1,0 +1,33 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "level_boat",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 6,
+  "sample": 1,
+  "speed": 5,
+  "wrapMode": 54,
+  "curveData": {
+    "props": {
+      "angle": [
+        {
+          "frame": 0,
+          "value": -2.3360000000000003
+        },
+        {
+          "frame": 2,
+          "value": -0.6640000000000004
+        },
+        {
+          "frame": 4,
+          "value": 8
+        },
+        {
+          "frame": 6,
+          "value": 0
+        }
+      ]
+    }
+  },
+  "events": []
+}

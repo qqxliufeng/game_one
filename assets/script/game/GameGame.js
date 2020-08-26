@@ -131,12 +131,14 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
-    parent: cc.Node
+    parent: cc.Node,
+    successTip: cc.AudioClip,
+    errorTip: cc.AudioClip
   },
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
-    cc.director.getCollisionManager().enabledDebugDraw = true
+    // cc.director.getCollisionManager().enabledDebugDraw = true
     this.itemInfo = getItemName()
     cc.resources.preload('texture/game/pic_chg_' + this.itemInfo.animalName + '_1', cc.spriteFrame)
     cc.resources.preload('texture/game/pic_chg_' + this.itemInfo.animalName + '_2', cc.spriteFrame)
@@ -159,13 +161,13 @@ cc.Class({
           this.animalItem.x = this.itemInfo.animalOption.x ? this.parent.x - this.parent.width * this.itemInfo.animalOption.x : 0
           this.animalItem.y = this.itemInfo.animalOption.x ? this.parent.y + this.parent.height * this.itemInfo.animalOption.y : 0
           this.animalItem.getComponent(cc.Sprite).spriteFrame = spriteFrame
-          const animation = this.animalItem.getComponent(cc.Animation)
+          this.animation = this.animalItem.getComponent(cc.Animation)
           if (this.animalSpriteTwo) {
             //初始化动画效果
             const clip = cc.AnimationClip.createWithSpriteFrames([this.animalSpriteOne, this.animalSpriteTwo], 10)
             clip.name = 'animal_run'
-            animation.addClip(clip)
-            const animationState = animation.play(clip.name)
+            this.animation.addClip(clip)
+            const animationState = this.animation.play(clip.name)
             animationState.repeatCount = 4
             //初始化碰撞组件
             const boxCollider = this.animalItem.addComponent(cc.BoxCollider)
@@ -218,14 +220,28 @@ cc.Class({
       },
       otherParams: {
         callback: () => {
-          script.backTween()
-          // if (this.animalItem.getComponent('CollideListener').canEat()) {
-          //   this.success(word)
-          // } else {
-          //   this.error(script)
-          // }
+          // script.backTween()
+          if (this.animalItem.getComponent('CollideListener').canEat()) {
+            this.success(word)
+          } else {
+            this.error(script)
+          }
         }
       }
     })
   },
+
+  success(word) {
+    cc.tween(word).to(0.5, { scale: 0 }, { easing: 'fade' }).call(() => {
+      word.active = false
+      cc.audioEngine.play(this.successTip, false, 1)
+      const animationState = this.animation.play('animal_run')
+      animationState.repeatCount = 4
+    }).start()
+  },
+
+  error(script) {
+    script.backTween()
+    cc.audioEngine.play(this.errorTip, false, 1)
+  }
 });
