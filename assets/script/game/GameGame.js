@@ -9,7 +9,9 @@ const GAME_ITEM_LIST = [
     bg: 'four',
     color: new cc.Color(0, 0, 0),
     animalOption: {
-      scale: 0.8,
+      scale: 0.7,
+      x: -0.1,
+      y: 0.1,
       boxCollider: {
         offsetX: 0.15,
         offsetY: 0.12,
@@ -159,7 +161,7 @@ cc.Class({
           this.parent.addChild(this.animalItem)
           this.animalItem.scale = this.itemInfo.animalOption.scale
           this.animalItem.x = this.itemInfo.animalOption.x ? this.parent.x - this.parent.width * this.itemInfo.animalOption.x : 0
-          this.animalItem.y = this.itemInfo.animalOption.x ? this.parent.y + this.parent.height * this.itemInfo.animalOption.y : 0
+          this.animalItem.y = this.itemInfo.animalOption.y ? this.parent.y + this.parent.height * this.itemInfo.animalOption.y : 0
           this.animalItem.getComponent(cc.Sprite).spriteFrame = spriteFrame
           this.animation = this.animalItem.getComponent(cc.Animation)
           if (this.animalSpriteTwo) {
