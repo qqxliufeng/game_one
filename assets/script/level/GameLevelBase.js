@@ -13,6 +13,15 @@ cc.Class({
     cc.director.getCollisionManager().enabledDebugDraw = true
     this.initWordItem(this.wordItem1)
     this.initWordItem(this.wordItem2)
+    post({
+      url: 'doLogin',
+      data: {
+        phone: '18800000000',
+        password: '123123'
+      }
+    }).then(res => {
+      console.log(res)
+    })
   },
 
   initWordItem(wordItem) {

@@ -7,14 +7,19 @@ cc.Class({
   },
 
   onCollisionEnter(other, self) {
-    console.log('enter')
+    if (other.isCollided) {
+      return
+    }
+    other.isCollided = true
     this.isCollided = true
   },
   onCollisionStay(other, self) {
     this.isCollided = true
+    other.isCollided = true
   },
   onCollisionExit(other, self) {
     this.isCollided = false
+    other.isCollided = false
   },
 
   canEat() {
