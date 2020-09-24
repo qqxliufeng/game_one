@@ -1,13 +1,3 @@
-// let xhr = new XMLHttpRequest();
-//  xhr.onreadystatechange = function () {
-//      if (xhr.readyState == 4 && (xhr.status >= 200 && xhr.status < 400)) {
-//          var response = xhr.responseText;
-//          console.log(response);
-//      }
-//  };
-//  xhr.open("GET", url, true);
-//  xhr.send();
-
 var baseURL = 'http://ht.youcanedu.net:8881'
 
 function encode(val) {
@@ -57,6 +47,45 @@ function forEach(obj, fn) {
       }
     }
   }
+}
+
+function buildURL(url, params, paramsSerializer) {
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (typeof URLSearchParams !== 'undefined' && params instanceof URLSearchParams) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (Object.prototype.toString.call(val) === '[object Array]') {
+        key = key + '[]';
+      } else {
+        val = [val];
+      }
+
+      forEach(val, function parseValue(v) {
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
 }
 
 function post({ url, data = null, headers = [] }) {
@@ -117,43 +146,3 @@ function get({ url, data = null, headers = [] }) {
     request.send(null)
   })
 }
-
-function buildURL(url, params, paramsSerializer) {
-  if (!params) {
-    return url;
-  }
-
-  var serializedParams;
-  if (paramsSerializer) {
-    serializedParams = paramsSerializer(params);
-  } else if (typeof URLSearchParams !== 'undefined' && params instanceof URLSearchParams) {
-    serializedParams = params.toString();
-  } else {
-    var parts = [];
-
-    forEach(params, function serialize(val, key) {
-      if (val === null || typeof val === 'undefined') {
-        return;
-      }
-
-      if (Object.prototype.toString.call(val) === '[object Array]') {
-        key = key + '[]';
-      } else {
-        val = [val];
-      }
-
-      forEach(val, function parseValue(v) {
-        parts.push(encode(key) + '=' + encode(v));
-      });
-    });
-
-    serializedParams = parts.join('&');
-  }
-
-  if (serializedParams) {
-    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-  }
-
-  return url;
-}
-
