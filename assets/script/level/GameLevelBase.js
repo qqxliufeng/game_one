@@ -9,18 +9,23 @@ cc.Class({
   },
 
   onLoad() {
-    cc.director.getCollisionManager().enabled = true
-    cc.director.getCollisionManager().enabledDebugDraw = true
+    // cc.director.getCollisionManager().enabled = true
+    // cc.director.getCollisionManager().enabledDebugDraw = true
     this.initWordItem(this.wordItem1)
     this.initWordItem(this.wordItem2)
-    post({
-      url: 'doLogin',
-      data: {
-        phone: '18800000000',
-        password: '123123'
-      }
-    }).then(res => {
-      console.log(res)
+    getLoading().then((loadingController) => {
+      this.loadingController = loadingController
+      this.loadingController.show()
+      post({
+        url: 'doLogin',
+        data: {
+          phone: '18800000000',
+          password: '123123'
+        }
+      }).then(res => {
+        console.log(res)
+        this.loadingController.close()
+      })
     })
   },
 
@@ -45,6 +50,21 @@ cc.Class({
 
   touchEnd(e) {
     cc.tween(e.target).to(1, { position: e.target.rawInfo.position, scale: e.target.rawInfo.scale }, { easing: 'elasticOut' }).start()
+    post({
+      url: 'doLogin',
+      data: {
+        phone: '18800000000',
+        password: '123123'
+      },
+      beforeRequest: () => {
+        this.loadingController.show('正在上传')
+      },
+      afterRequest: () => {
+        this.loadingController.close()
+      }
+    }).then(res => {
+      console.log(res)
+    })
   },
 
   onDestroy() {

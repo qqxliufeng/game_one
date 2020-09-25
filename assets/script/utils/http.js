@@ -1,3 +1,25 @@
+/**
+ * 加载进度对话框
+ */
+function getLoading() {
+  return new Promise(function (resolve, reject) {
+    cc.resources.load('prefab/loading', cc.Prefab, (error, assets) => {
+      if (error) {
+        reject(new Error('加载对话框加载失败'))
+      } else {
+        const loading = cc.instantiate(assets)
+        const canvas = cc.director.getScene().getChildByName('Canvas')
+        if (canvas) {
+          canvas.addChild(loading)
+          resolve(loading.getChildByName('loading').getComponent('loading'))
+        } else {
+          reject(new Error('没有Canvan容器', '加载对话框加载失败'))
+        }
+      }
+    })
+  })
+}
+
 var baseURL = 'http://ht.youcanedu.net:8881'
 
 function encode(val) {
@@ -88,24 +110,28 @@ function buildURL(url, params, paramsSerializer) {
   return url;
 }
 
-function post({ url, data = null, headers = [] }) {
+function post({ url, data = null, beforeRequest = null, afterRequest = null }) {
   if (!url) return
   if (!isAbsoluteURL(url)) {
     url = combineURLs(baseURL, url)
   }
   return new Promise(function (resolve, reject) {
+    (beforeRequest && typeof beforeRequest === 'function') && beforeRequest()
     const request = new XMLHttpRequest()
     request.onreadystatechange = function () {
       if (request.readyState !== 4 || request.status !== 200) {
         return
       }
+      (afterRequest && typeof afterRequest === 'function') && afterRequest()
       resolve(JSON.parse(request.responseText))
     }
     request.onerror = function (error) {
+      (afterRequest && typeof afterRequest === 'function') && afterRequest()
       reject(new Error('请求失败，请重试……'))
     }
     request.timeout = 10000
     request.ontimeout = function () {
+      (afterRequest && typeof afterRequest === 'function') && afterRequest()
       reject(new Error('timeout', '请求超时'))
     }
     request.open('POST', url, true)
@@ -120,24 +146,28 @@ function post({ url, data = null, headers = [] }) {
   })
 }
 
-function get({ url, data = null, headers = [] }) {
+function get({ url, data = null, beforeRequest = null, afterRequest = null }) {
   if (!url) return
   if (!isAbsoluteURL(url)) {
     url = combineURLs(baseURL, url)
   }
   return new Promise(function (resolve, reject) {
+    (beforeRequest && typeof beforeRequest === 'function') && beforeRequest()
     const request = new XMLHttpRequest()
     request.onreadystatechange = function () {
       if (request.readyState !== 4 || request.status !== 200) {
         return
       }
+      (afterRequest && typeof afterRequest === 'function') && afterRequest()
       resolve(JSON.parse(request.responseText))
     }
     request.onerror = function (error) {
+      (afterRequest && typeof afterRequest === 'function') && afterRequest()
       reject(new Error('请求失败，请重试……'))
     }
     request.timeout = 10000
     request.ontimeout = function () {
+      (afterRequest && typeof afterRequest === 'function') && afterRequest()
       reject(new Error('timeout', '请求超时'))
     }
     request.open('GET', buildURL(url, data), true)
