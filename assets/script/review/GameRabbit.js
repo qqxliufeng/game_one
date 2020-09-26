@@ -27,10 +27,13 @@ cc.Class({
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
+    this.animal.on(cc.Node.EventType.TOUCH_END, () => {
+      cc.assetManager.loadRemote('http://192.168.1.107:7456/app/editor/static/img/make.mp3', (error, asset) => {
+        cc.audioEngine.play(asset)
+      })
+    }, this)
     cc.resources.load(SPRITE_NAME, cc.SpriteFrame, (error, sprite) => {
       this.spriteFrame = sprite
-      // this.spriteFrame.addRef()
-      console.log(this.spriteFrame)
       const width = WORD_ITEM_WIDTH
       const height = parseInt(WORD_ITEM_WIDTH * sprite.getRect().height / sprite.getRect().width)
       cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {

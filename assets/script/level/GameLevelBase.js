@@ -57,7 +57,7 @@ cc.Class({
         password: '123123'
       },
       beforeRequest: () => {
-        this.loadingController.show('正在上传')
+        this.loadingController.show()
       },
       afterRequest: () => {
         this.loadingController.close()
