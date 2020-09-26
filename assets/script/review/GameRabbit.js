@@ -27,9 +27,29 @@ cc.Class({
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
+    // this.animal.on(cc.Node.EventType.TOUCH_END, () => {
+    //   cc.assetManager.loadRemote('http://192.168.1.107:7456/app/editor/static/img/make.mp3', (error, asset) => {
+    //     cc.audioEngine.play(asset)
+    //   })
+    // }, this)
+    wx.config({
+      debug: true,  // 打开输出开关
+      appId: 'wxf8b4f85f3a794e77',
+      timestamp: 1459418306,
+      nonceStr: 'KTCr5MF8AGZu1sPN',
+      signature: '1023f689b4351e8195366f6c78b3182ec297385c',
+      jsApiList: [
+        'checkJsApi',
+        'onMenuShareTimeline'
+      ]
+    })
+    cc.audioEngine.play(this.errorTip, false, 1)
+    wx.ready((res) => {
+      cc.audioEngine.play(this.errorTip, false, 1)
+    })
     this.animal.on(cc.Node.EventType.TOUCH_END, () => {
       cc.assetManager.loadRemote('http://192.168.1.107:7456/app/editor/static/img/make.mp3', (error, asset) => {
-        cc.audioEngine.play(asset)
+        cc.audioEngine.playEffect(asset)
       })
     }, this)
     cc.resources.load(SPRITE_NAME, cc.SpriteFrame, (error, sprite) => {
