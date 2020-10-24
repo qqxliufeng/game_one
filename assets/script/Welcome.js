@@ -8,9 +8,9 @@ cc.Class({
   },
 
   onLoad() {
-    // getLoading().then((loadingController) => { this.loadingController = loadingController })
-    this.scheduleOnce(_ => {
-      cc.director.loadScene(getReviewScene())
-    }, 5)
+    getLoading().then((loadingController) => { this.loadingController = loadingController })
+    // this.scheduleOnce(_ => {
+    //   cc.director.loadScene(getReviewScene())
+    // }, 5)
   }
 });
