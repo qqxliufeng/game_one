@@ -450,9 +450,7 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_spriteFrame": {
-      "__uuid__": "0e1457c8-4038-4b9c-8e0e-2259cb6fd673"
-    },
+    "_spriteFrame": null,
     "_type": 0,
     "_sizeMode": 1,
     "_fillType": 0,
@@ -510,7 +508,7 @@
         "__uuid__": "53d18b23-73bf-4efd-b344-18554035178e"
       }
     ],
-    "playOnLoad": true,
+    "playOnLoad": false,
     "_id": ""
   },
   {
