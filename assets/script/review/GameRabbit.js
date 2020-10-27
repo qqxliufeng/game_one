@@ -26,27 +26,13 @@ cc.Class({
   },
 
   onLoad() {
-    cc.director.getCollisionManager().enabled = true
-    cc.director.getCollisionManager().enabledDebugDraw = true
-    // wx.config({
-    //   debug: true,  // 打开输出开关
-    //   appId: 'wxf8b4f85f3a794e77',
-    //   timestamp: 1459418306,
-    //   nonceStr: 'KTCr5MF8AGZu1sPN',
-    //   signature: '1023f689b4351e8195366f6c78b3182ec297385c',
-    //   jsApiList: [
-    //     'checkJsApi',
-    //     'onMenuShareTimeline'
-    //   ]
-    // })
-    // wx.ready((res) => {
-    //   cc.audioEngine.play(this.errorTip, false, 1)
-    // })
     this.fingerTipNode = this.parent.getChildByName('finger_tip')
     this.fingerTipNode.active = false
+    this.parent.on(cc.Node.EventType.TOUCH_START, () => {
+      this.fingerTipNode.active === true && (this.fingerTipNode.active = false)
+    })
     this.animal.on(cc.Node.EventType.TOUCH_END, () => {
       cc.assetManager.loadRemote('http://192.168.1.104:7456/app/editor/static/img/make.mp3', (error, asset) => {
-        console.log(error)
         cc.audioEngine.playEffect(asset)
       })
     }, this)
@@ -82,10 +68,12 @@ cc.Class({
     this.fingerTipNode.active = true
     const box = this.animal.getComponent(cc.BoxCollider)
     const desPosition = box.offset
-    cc.tween(this.fingerTipNode)
-      .to(0.8, { position: cc.v2(desPosition.x + box.size.width / 2, desPosition.y) })
-      .to(0, { position: cc.v2(x, y) })
-      .repeatForever()
+    const tween = cc.tween(this.fingerTipNode)
+      .to(1.5, { position: cc.v2(desPosition.x * this.animal.scaleX + this.animal.position.x, desPosition.y * this.animal.scaleY + this.animal.position.y - this.fingerTipNode.height / 2) })
+      .call(() => {
+        this.fingerTipNode.position = cc.v2(x, y)
+        tween.start()
+      })
       .start()
   },
 

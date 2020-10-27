@@ -27,17 +27,26 @@ cc.Class({
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
+    cc.director.getCollisionManager().enabledDebugDraw = true
+    this.fingerTipNode = this.parent.getChildByName('finger_tip')
+    this.fingerTipNode.active = false
+    this.parent.on(cc.Node.EventType.TOUCH_START, () => {
+      this.fingerTipNode.active === true && (this.fingerTipNode.active = false)
+    })
     cc.resources.load(SPRITE_NAME, cc.SpriteFrame, (error, sprite) => {
       const width = WORD_ITEM_WIDTH
       const height = parseInt(WORD_ITEM_WIDTH * sprite.getRect().height / sprite.getRect().width)
+      const x1 = (this.node.x - this.parent.width / 2) + sprite.getRect().width / 2
+      const y1 = (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2
       cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
         this.initPrefab(cc.instantiate(assets), {
-          x: (this.node.x - this.parent.width / 2) + sprite.getRect().width / 2,
-          y: (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2,
+          x: x1,
+          y: y1,
           width,
           height
         }, sprite)
       })
+      this.initFinger(x1, y1)
       cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
         this.initPrefab(cc.instantiate(assets), {
           x: (this.node.x + this.parent.width / 2) - sprite.getRect().width / 2,
@@ -47,6 +56,22 @@ cc.Class({
         }, sprite)
       })
     })
+  },
+
+  initFinger(x, y) {
+    this.fingerTipNode.position = cc.v2(x, y)
+    this.fingerTipNode.zIndex = 1
+    this.fingerTipNode.active = true
+    const box = this.animal.getComponent(cc.BoxCollider)
+    const desPosition = box.offset
+    console.log(this.animal)
+    const tween = cc.tween(this.fingerTipNode)
+      .to(1.5, { position: cc.v2(desPosition.x * this.animal.scaleX + this.animal.position.x, desPosition.y * this.animal.scaleY + this.animal.position.y - this.fingerTipNode.height / 2) })
+      .call(() => {
+        this.fingerTipNode.position = cc.v2(x, y)
+        tween.start()
+      })
+      .start()
   },
 
   initPrefab(word, position, sprite) {

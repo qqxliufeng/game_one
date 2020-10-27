@@ -8,7 +8,7 @@ const WORD_PRE_FAB_NAME = 'prefab/word_item'
  */
 function getReviewScene() {
   // return REVIEW_GAME_SCENES[Math.floor(Math.random() * REVIEW_GAME_SCENES.length)]
-  return 'game_rabbit'
+  return 'game_cat'
 }
 
 /**
