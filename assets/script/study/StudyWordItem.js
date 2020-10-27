@@ -11,9 +11,6 @@ cc.Class({
 
   },
 
-  start() {
-  },
-
   touchMove(e) {
     this.node.setPosition(this.node.x + e.getDeltaX(), this.node.y + e.getDeltaY())
   },

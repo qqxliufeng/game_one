@@ -7,7 +7,8 @@ const WORD_PRE_FAB_NAME = 'prefab/word_item'
  * 获得一个复习的游戏场景
  */
 function getReviewScene() {
-  return REVIEW_GAME_SCENES[Math.floor(Math.random() * REVIEW_GAME_SCENES.length)]
+  // return REVIEW_GAME_SCENES[Math.floor(Math.random() * REVIEW_GAME_SCENES.length)]
+  return 'game_rabbit'
 }
 
 /**

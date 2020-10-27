@@ -20,6 +20,8 @@ cc.Class({
       this.setScale()
       this.defaultScale = params.scale
       this.defaultPosition = params.position
+      this.wordAudioPath = params.wordAudioPath || 'http://192.168.1.104:7456/app/editor/static/img/make.mp3'
+      this.node.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this)
     }, 0)
   },
 
@@ -45,6 +47,10 @@ cc.Class({
           break
       }
     }, 0)
+  },
+
+  touchEnd() {
+    playRemoteAudio(this.wordAudioPath)
   },
 
   setPosition(position = new cc.v2(0, 0)) {

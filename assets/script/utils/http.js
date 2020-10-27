@@ -176,3 +176,10 @@ function get({ url, data = null, beforeRequest = null, afterRequest = null }) {
     request.send(null)
   })
 }
+
+function playRemoteAudio(path = '') {
+  path && cc.assetManager.loadRemote(path, (error, asset) => {
+    error && console.log(error)
+    cc.audioEngine.playEffect(asset)
+  })
+}

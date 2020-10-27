@@ -120,7 +120,10 @@ cc.Class({
         const script = prefab.getComponent('StudyWordItem')
         const mod = index % ROW_WORD_COUNT
         const div = parseInt(index / ROW_WORD_COUNT)
-        const size = { width: DEFAULT_ITEM_WIDTH, height: DEFAULT_ITEM_WIDTH / (sprite.getRect().width / sprite.getRect().height) }
+        const size = {
+          width: DEFAULT_ITEM_WIDTH,
+          height: DEFAULT_ITEM_WIDTH / (sprite.getRect().width / sprite.getRect().height)
+        }
         const x = everyScreenClient / 2 + mod * everyScreenClient - (this.parent.width / 2)
         const y = (this.parent.height / 2) - div * (size.height + VERTICAL_SPACE) - size.height - top
         const position = new cc.v2(x, y)
@@ -134,6 +137,7 @@ cc.Class({
             position: item.position
           },
           clickCallBack: (text) => {
+            playRemoteAudio('http://192.168.1.104:7456/app/editor/static/img/make.mp3')
             this.bigWord.refresh({
               type: item.type,
               textFont: {
