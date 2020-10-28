@@ -89,9 +89,9 @@ cc.Class({
   },
 
   appleTransition() {
-    this.node.scale = 0
+    // this.node.scale = 0.8
     this.node.setPosition(cc.v2(this.defaultPosition.x, this.defaultPosition.y + this.node.parent.height))
-    cc.tween(this.node).to(2, { position: cc.v2(this.defaultPosition.x, this.defaultPosition.y), scale: this.defaultScale }, { easing: 'elasticOut' }).start()
+    cc.tween(this.node).to(2, { position: cc.v2(this.defaultPosition.x, this.defaultPosition.y), scale: this.defaultScale * 0.8 }, { easing: 'bounceOut' }).start()
   },
 
   mushroomTransition() {

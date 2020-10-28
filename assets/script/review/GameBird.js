@@ -1,52 +1,12 @@
-const { WORD_ITEM_WIDTH } = require("../utils/globals");
+const BaseClass = require('../utils/BaseClass')
 
-const PRE_FAB_NAME = 'prefab/word_item'
 const SPRITE_NAME = 'texture/pic_wg_canbaobao'
 
 cc.Class({
-  extends: cc.Component,
-
-  properties: {
-    parent: {
-      type: cc.Node,
-      default: null
-    },
-    animal: {
-      type: cc.Node,
-      default: null
-    },
-    successTip: {
-      type: cc.AudioClip,
-      default: null
-    },
-    errorTip: {
-      type: cc.AudioClip,
-      default: null
-    }
-  },
+  extends: BaseClass,
 
   onLoad() {
-    cc.director.getCollisionManager().enabled = true
-    cc.resources.load(SPRITE_NAME, cc.SpriteFrame, (error, sprite) => {
-      const width = WORD_ITEM_WIDTH
-      const height = parseInt(WORD_ITEM_WIDTH * sprite.getRect().height / sprite.getRect().width)
-      cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
-        this.initPrefab(cc.instantiate(assets), {
-          x: (this.node.x - this.parent.width / 2) + sprite.getRect().width / 3 * 2,
-          y: (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2,
-          width,
-          height
-        }, sprite)
-      })
-      cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
-        this.initPrefab(cc.instantiate(assets), {
-          x: (this.node.x + this.parent.width / 2) - sprite.getRect().width / 3 * 2,
-          y: (this.node.y - this.parent.height / 2) + sprite.getRect().height / 2,
-          width,
-          height
-        }, sprite)
-      })
-    })
+    this.initWordItem(SPRITE_NAME)
   },
 
   initPrefab(word, position, sprite) {
@@ -72,7 +32,7 @@ cc.Class({
       },
       otherParams: {
         callback: () => {
-          if (this.animal.getComponent('CollideListener').canEat()) {
+          if (this.collisionManager.isCollisionAndRight()) {
             this.success(word)
           } else {
             this.error(script)

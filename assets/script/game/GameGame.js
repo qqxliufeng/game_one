@@ -223,7 +223,7 @@ cc.Class({
       otherParams: {
         callback: () => {
           // script.backTween()
-          if (this.animalItem.getComponent('CollideListener').canEat()) {
+          if (this.animalItem.getComponent('CollideListener').isCollisionAndRight()) {
             this.success(word)
           } else {
             this.error(script)
