@@ -40,17 +40,5 @@ cc.Class({
         }
       }
     })
-  },
-
-  success(word) {
-    cc.tween(word).to(0.5, { position: cc.v2(-150, 85), scale: 0 }, { easing: 'fade' }).call(() => {
-      word.active = false
-      cc.audioEngine.play(this.successTip, false, 1)
-    }).start()
-  },
-
-  error(script) {
-    script.backTween()
-    cc.audioEngine.play(this.errorTip, false, 1)
   }
 });

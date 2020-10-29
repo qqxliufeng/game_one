@@ -40,25 +40,5 @@ cc.Class({
         }
       }
     })
-  },
-
-  success(word) {
-    cc.tween(word).to(0.5, { angle: 360 * 3, scale: 0 }, { easing: 'fade' }).call(() => {
-      word.active = false
-      cc.audioEngine.play(this.successTip, false, 1)
-    }).start()
-  },
-
-  error(script) {
-    script.backTween()
-    cc.audioEngine.play(this.errorTip, false, 1)
-  },
-
-  start() { },
-
-  // update (dt) {},
-
-  onDestroy() {
-    cc.resources.releaseAll()
   }
 });

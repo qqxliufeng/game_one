@@ -1,3 +1,4 @@
+const BaseClass = require('../utils/BaseClass')
 const { WORD_ITEM_WIDTH } = require("../utils/globals")
 
 const PRE_FAB_NAME = 'prefab/word_item'
@@ -130,17 +131,10 @@ function getItemName() {
 }
 
 cc.Class({
-  extends: cc.Component,
-
-  properties: {
-    parent: cc.Node,
-    successTip: cc.AudioClip,
-    errorTip: cc.AudioClip
-  },
+  extends: BaseClass,
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
-    // cc.director.getCollisionManager().enabledDebugDraw = true
     this.itemInfo = getItemName()
     cc.resources.preload('texture/game/pic_chg_' + this.itemInfo.animalName + '_1', cc.spriteFrame)
     cc.resources.preload('texture/game/pic_chg_' + this.itemInfo.animalName + '_2', cc.spriteFrame)
@@ -157,13 +151,14 @@ cc.Class({
       cc.resources.load('texture/game/pic_chg_' + this.itemInfo.animalName + '_2', cc.SpriteFrame, (e1, spriteFrame2) => {
         this.animalSpriteTwo = spriteFrame2
         cc.resources.load('prefab/game_animal_item', cc.Prefab, (e2, assets) => {
-          this.animalItem = cc.instantiate(assets)
-          this.parent.addChild(this.animalItem)
-          this.animalItem.scale = this.itemInfo.animalOption.scale
-          this.animalItem.x = this.itemInfo.animalOption.x ? this.parent.x - this.parent.width * this.itemInfo.animalOption.x : 0
-          this.animalItem.y = this.itemInfo.animalOption.y ? this.parent.y + this.parent.height * this.itemInfo.animalOption.y : 0
-          this.animalItem.getComponent(cc.Sprite).spriteFrame = spriteFrame
-          this.animation = this.animalItem.getComponent(cc.Animation)
+          this.animal = cc.instantiate(assets)
+          this.parent.addChild(this.animal)
+          this.animal.scale = this.itemInfo.animalOption.scale
+          this.animal.x = this.itemInfo.animalOption.x ? this.parent.x - this.parent.width * this.itemInfo.animalOption.x : 0
+          this.animal.y = this.itemInfo.animalOption.y ? this.parent.y + this.parent.height * this.itemInfo.animalOption.y : 0
+          this.animal.getComponent(cc.Sprite).spriteFrame = spriteFrame
+          this.animation = this.animal.getComponent(cc.Animation)
+          this.collisionManager = this.animal.getComponent('CollideListener')
           if (this.animalSpriteTwo) {
             //初始化动画效果
             const clip = cc.AnimationClip.createWithSpriteFrames([this.animalSpriteOne, this.animalSpriteTwo], 10)
@@ -172,8 +167,8 @@ cc.Class({
             const animationState = this.animation.play(clip.name)
             animationState.repeatCount = 4
             //初始化碰撞组件
-            const boxCollider = this.animalItem.addComponent(cc.BoxCollider)
-            boxCollider.offset = cc.v2(this.animalItem.width * this.itemInfo.animalOption.boxCollider.offsetX, this.animalItem.height * this.itemInfo.animalOption.boxCollider.offsetY)
+            const boxCollider = this.animal.addComponent(cc.BoxCollider)
+            boxCollider.offset = cc.v2(this.animal.width * this.itemInfo.animalOption.boxCollider.offsetX, this.animal.height * this.itemInfo.animalOption.boxCollider.offsetY)
             boxCollider.size = cc.size(boxCollider.size.width * this.itemInfo.animalOption.boxCollider.width, boxCollider.size.height * this.itemInfo.animalOption.boxCollider.height)
           }
         })
@@ -188,12 +183,14 @@ cc.Class({
         cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
           const width = WORD_ITEM_WIDTH
           const height = parseInt(WORD_ITEM_WIDTH * sprite.getRect().height / sprite.getRect().width)
-          this.initPrefab(cc.instantiate(assets), {
-            x: i % 2 === 0 ? (this.parent.x + this.parent.width / 2) - sprite.getRect().width / 2 : (this.parent.x - this.parent.width / 2) + sprite.getRect().width / 2,
-            y: (this.parent.y - this.parent.height / 2) + sprite.getRect().height / 3 * 2,
-            width,
-            height
-          }, sprite)
+          this.scheduleOnce(() => {
+            const x = i % 2 === 0 ? (this.parent.x + this.parent.width / 2) - sprite.getRect().width / 2 : (this.parent.x - this.parent.width / 2) + sprite.getRect().width / 2
+            const y = (this.parent.y - this.parent.height / 2) + sprite.getRect().height / 3 * 2
+            this.initPrefab(cc.instantiate(assets), { x, y, width, height }, sprite)
+            if (i === 1) {
+              this.initFinger(x, y)
+            }
+          })
         })
       }
     })
@@ -214,7 +211,7 @@ cc.Class({
         spriteFrame: sprite
       },
       textParams: {
-        label: '王',
+        label: '',
         fontSize: 80,
         color: this.itemInfo.color,
         x: this.itemInfo.font.x || 0,
@@ -223,7 +220,7 @@ cc.Class({
       otherParams: {
         callback: () => {
           // script.backTween()
-          if (this.animalItem.getComponent('CollideListener').isCollisionAndRight()) {
+          if (this.collisionManager.isCollisionAndRight()) {
             this.success(word)
           } else {
             this.error(script)
@@ -231,19 +228,5 @@ cc.Class({
         }
       }
     })
-  },
-
-  success(word) {
-    cc.tween(word).to(0.5, { scale: 0 }, { easing: 'fade' }).call(() => {
-      word.active = false
-      cc.audioEngine.play(this.successTip, false, 1)
-      const animationState = this.animation.play('animal_run')
-      animationState.repeatCount = 4
-    }).start()
-  },
-
-  error(script) {
-    script.backTween()
-    cc.audioEngine.play(this.errorTip, false, 1)
   }
 });

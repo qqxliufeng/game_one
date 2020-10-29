@@ -44,21 +44,5 @@ cc.Class({
         }
       }
     })
-  },
-
-  success(word) {
-    word.active = false
-    cc.audioEngine.play(this.successTip, false, 1)
-    const animation = this.animal.getComponent(cc.Animation)
-    animation.on('finished', () => {
-      // cc.director.loadScene(getReviewScene())
-    }, this);
-    const animationState = animation.play()
-    animationState.repeatCount = 4
-  },
-
-  error(script) {
-    script.backTween()
-    cc.audioEngine.play(this.errorTip, false, 1)
   }
 });
