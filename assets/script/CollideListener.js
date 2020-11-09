@@ -23,7 +23,11 @@ cc.Class({
   },
 
   isCollisionAndRight() {
-    return this.isCollided && !!this.other && !!this.self
+    return {
+      isCollided: this.isCollided,
+      self: this.self,
+      other: this.other
+    }
   }
 
 });

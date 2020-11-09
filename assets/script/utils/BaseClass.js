@@ -23,7 +23,42 @@ module.exports = cc.Class({
     }
   },
 
-  initWordItem(spriteName) {
+  onLoad() {
+    getLoading().then((controller) => {
+      post({
+        url: findKnowDetail,
+        data: {
+          type: 1
+        }
+      }).then(res => {
+        controller.close()
+        this.dataModel = res.data
+        this.dataModel.loreObject.list = this.randomText(this.dataModel.loreObject.list)
+        const path = this.getAudioPath().href
+        this.animal.on(cc.Node.EventType.TOUCH_END, () => {
+          cc.assetManager.loadRemote(audioAddress + path, (error, asset) => {
+            cc.audioEngine.playEffect(asset)
+          })
+        }, this)
+        this.initWordItem(this.getSpriteName(), this.dataModel.loreObject.list[0].text, this.dataModel.loreObject.list[1].text)
+      }).catch(error => {
+        controller.close()
+        console.log(error)
+      })
+    })
+  },
+
+  getAudioPath() {
+    this.corroctItem = null
+    this.dataModel.loreObject.list.forEach(it => {
+      if (it.text === this.dataModel.loreObject.text) {
+        this.corroctItem = it
+      }
+    })
+    return this.corroctItem
+  },
+
+  initWordItem(spriteName, leftText = '', rightText = '') {
     cc.director.getCollisionManager().enabled = true
     this.collisionManager = this.animal.getComponent('CollideListener')
     cc.resources.load(spriteName, cc.SpriteFrame, (error, sprite) => {
@@ -39,7 +74,7 @@ module.exports = cc.Class({
             y: y1,
             width,
             height
-          }, sprite)
+          }, sprite, leftText)
         })
         this.initFinger(x1, y1)
         cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
@@ -48,7 +83,7 @@ module.exports = cc.Class({
             y: y1,
             width,
             height
-          }, sprite)
+          }, sprite, rightText)
         })
       })
     })
@@ -73,9 +108,60 @@ module.exports = cc.Class({
     })
   },
 
-  success(word) {
+  randomText(srcList) {
+    const tempList = []
+    while (tempList.length < srcList.length) {
+      const tempItem = srcList[Math.floor(Math.random() * srcList.length)]
+      if (tempList.find(it => it === tempItem)) {
+        continue
+      } else {
+        tempList.push(tempItem)
+      }
+    }
+    return tempList
+  },
+
+  callback(word, script) {
+    const { isCollided, other } = this.collisionManager.isCollisionAndRight()
+    if (isCollided) {
+      if (other.node.text === this.corroctItem.text) {
+        this.playSuccessTip(word)
+        this.uploadRecord(true)
+      } else {
+        this.uploadRecord(false)
+        this.doErrorAction(script)
+        this.playErrorTip(script)
+      }
+    } else {
+      this.doErrorAction(script)
+    }
+  },
+
+  uploadRecord(isRight) {
+    post({
+      url: record,
+      data: {
+        operatorType: 1,
+        result: isRight ? 1 : 2,
+        loreId: this.dataModel.id
+      }
+    }).then(res => {
+      if (res.code === 200) {
+        if (isRight) {
+          this.doSuccessAction()
+        }
+      }
+    }).catch(error => {
+      console.log(error)
+    })
+  },
+
+  playSuccessTip(word) {
     word.active = false
     cc.audioEngine.play(this.successTip, false, 1)
+  },
+
+  doSuccessAction() {
     const animation = this.animal.getComponent(cc.Animation)
     if (animation) {
       animation.on('finished', () => {
@@ -84,13 +170,18 @@ module.exports = cc.Class({
       const animationState = animation.play('animal_run')
       animationState.repeatCount = 4
     } else {
-      cc.director.loadScene(getReviewScene())
+      this.scheduleOnce(() => {
+        cc.director.loadScene(getReviewScene())
+      }, 0.5)
     }
   },
 
-  error(script) {
-    script.backTween()
+  playErrorTip() {
     cc.audioEngine.play(this.errorTip, false, 1)
+  },
+
+  doErrorAction(script) {
+    script.backTween()
   }
 
 })

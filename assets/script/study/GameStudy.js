@@ -1,3 +1,5 @@
+const { findKnowDetail } = require("../utils/UrlPath");
+
 // 每行的个数
 const ROW_WORD_COUNT = 3
 

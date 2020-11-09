@@ -1,3 +1,4 @@
+
 /**
  * 加载进度对话框
  */
@@ -20,7 +21,7 @@ function getLoading() {
   })
 }
 
-var baseURL = 'http://ht.youcanedu.net:8881'
+var baseURL = 'http://segeg.free.idcfengye.com'
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -136,12 +137,15 @@ function post({ url, data = null, beforeRequest = null, afterRequest = null }) {
     }
     request.open('POST', url, true)
     request.withCredentials = true
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8')
+    request.setRequestHeader('Content-Type', 'application/json; charset=utf-8')
+    if (localStorage.getItem('token')) {
+      request.setRequestHeader('Authorization', 'token_' + localStorage.getItem('token'))
+    }
     if (!data) {
       request.send(null)
     } else {
-      const urlParams = new URLSearchParams(data)
-      request.send(urlParams.toString())
+      // const urlParams = new URLSearchParams(data)
+      request.send(JSON.stringify(data))
     }
   })
 }
@@ -172,7 +176,10 @@ function get({ url, data = null, beforeRequest = null, afterRequest = null }) {
     }
     request.open('GET', buildURL(url, data), true)
     request.withCredentials = true
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8')
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+    if (localStorage.getItem('token')) {
+      request.setRequestHeader('Authorization', 'token_' + localStorage.getItem('token'))
+    }
     request.send(null)
   })
 }

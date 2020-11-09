@@ -1,20 +1,16 @@
-const BaseClass = require('../utils/BaseClass')
+const BaseClass = require('../utils/BaseClass');
 
 const SPRITE_NAME = 'texture/pic_wg_megu'
 
 cc.Class({
   extends: BaseClass,
 
-  onLoad() {
-    // this.animal.on(cc.Node.EventType.TOUCH_END, () => {
-    //   cc.assetManager.loadRemote('http://192.168.1.104:7456/app/editor/static/img/make.mp3', (error, asset) => {
-    //     cc.audioEngine.playEffect(asset)
-    //   })
-    // }, this)
-    this.initWordItem(SPRITE_NAME)
+  getSpriteName() {
+    return SPRITE_NAME
   },
 
-  initPrefab(word, position, sprite) {
+  initPrefab(word, position, sprite, text) {
+    word.text = text
     this.parent.addChild(word)
     const script = word.getComponent('WordItem')
     script.init({
@@ -29,19 +25,13 @@ cc.Class({
         spriteFrame: sprite
       },
       textParams: {
-        label: '王',
+        label: text,
         fontSize: 80,
         color: new cc.Color(0, 0, 0),
-        y: -50
+        y: -55
       },
       otherParams: {
-        callback: () => {
-          if (this.collisionManager.isCollisionAndRight()) {
-            this.success(word)
-          } else {
-            this.error(script)
-          }
-        }
+        callback: this.callback.bind(this, word, script)
       }
     })
   }

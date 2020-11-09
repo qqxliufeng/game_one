@@ -5,11 +5,12 @@ const SPRITE_NAME = 'texture/pic_wg_guanzi'
 cc.Class({
   extends: BaseClass,
 
-  onLoad() {
-    this.initWordItem(SPRITE_NAME)
+  getSpriteName() {
+    return SPRITE_NAME
   },
 
-  initPrefab(word, position, sprite) {
+  initPrefab(word, position, sprite, text) {
+    word.text = text
     this.parent.addChild(word)
     const script = word.getComponent('WordItem')
     script.init({
@@ -24,20 +25,14 @@ cc.Class({
         spriteFrame: sprite
       },
       textParams: {
-        label: '王',
+        label: text,
         fontSize: 80,
         color: new cc.Color(255, 255, 255),
         x: 0,
         y: -20
       },
       otherParams: {
-        callback: () => {
-          if (this.collisionManager.isCollisionAndRight()) {
-            this.success(word)
-          } else {
-            this.error(script)
-          }
-        }
+        callback: this.callback.bind(this, word, script)
       }
     })
   }
