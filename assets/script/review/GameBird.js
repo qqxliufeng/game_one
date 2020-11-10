@@ -1,4 +1,4 @@
-const BaseClass = require('../utils/BaseClass')
+const BaseClass = require('./BaseClass')
 
 const SPRITE_NAME = 'texture/pic_wg_canbaobao'
 

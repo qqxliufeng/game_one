@@ -1,4 +1,4 @@
-const { WORD_ITEM_WIDTH, getReviewScene } = require("./globals")
+const { WORD_ITEM_WIDTH, getReviewScene } = require("../utils/globals")
 const PRE_FAB_NAME = 'prefab/word_item'
 
 module.exports = cc.Class({
@@ -32,15 +32,17 @@ module.exports = cc.Class({
         }
       }).then(res => {
         controller.close()
-        this.dataModel = res.data
-        this.dataModel.loreObject.list = this.randomText(this.dataModel.loreObject.list)
-        const path = this.getAudioPath().href
-        this.animal.on(cc.Node.EventType.TOUCH_END, () => {
-          cc.assetManager.loadRemote(audioAddress + path, (error, asset) => {
-            cc.audioEngine.playEffect(asset)
-          })
-        }, this)
-        this.initWordItem(this.getSpriteName(), this.dataModel.loreObject.list[0].text, this.dataModel.loreObject.list[1].text)
+        if (res.code === 200) {
+          this.dataModel = res.data
+          this.dataModel.loreObject.list = this.randomText(this.dataModel.loreObject.list)
+          const path = this.getAudioPath().href
+          this.animal.on(cc.Node.EventType.TOUCH_END, () => {
+            cc.assetManager.loadRemote(audioAddress + path, (error, asset) => {
+              cc.audioEngine.playEffect(asset)
+            })
+          }, this)
+          this.initWordItem(this.getSpriteName(), this.dataModel.loreObject.list[0].text, this.dataModel.loreObject.list[1].text)
+        }
       }).catch(error => {
         controller.close()
         console.log(error)
