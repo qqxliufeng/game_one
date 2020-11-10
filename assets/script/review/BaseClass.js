@@ -37,15 +37,15 @@ module.exports = cc.Class({
           this.dataModel.loreObject.list = this.randomText(this.dataModel.loreObject.list)
           const path = this.getAudioPath().href
           this.animal.on(cc.Node.EventType.TOUCH_END, () => {
-            cc.assetManager.loadRemote(audioAddress + path, (error, asset) => {
-              cc.audioEngine.playEffect(asset)
-            })
+            playRemoteAudio(audioAddress + path)
           }, this)
           this.initWordItem(this.getSpriteName(), this.dataModel.loreObject.list[0].text, this.dataModel.loreObject.list[1].text)
+        } else {
+          showToast(res.msg)
         }
       }).catch(error => {
         controller.close()
-        console.log(error)
+        showToast(error.message)
       })
     })
   },

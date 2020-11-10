@@ -101,10 +101,28 @@ cc.Class({
 
 
   onLoad() {
-    cc.resources.load('texture/study', cc.SpriteAtlas, (error, atlas) => {
-      const item = ITEMS[Math.floor(Math.random() * ITEMS.length)]
-      this.initItems(item, atlas)
-      this.initBigItem(item, atlas)
+    getLoading().then((controller) => {
+      post({
+        url: findKnowDetail,
+        data: {
+          type: 2
+        }
+      }).then(res => {
+        controller.close()
+        if (res.code === 200) {
+          this.dataModel = res.data
+          cc.resources.load('texture/study', cc.SpriteAtlas, (error, atlas) => {
+            const item = ITEMS[Math.floor(Math.random() * ITEMS.length)]
+            this.initItems(item, atlas)
+            this.initBigItem(item, atlas)
+          })
+        } else {
+          showToast(res.msg)
+        }
+      }).catch(error => {
+        controller.close()
+        showToast(error.message)
+      })
     })
   },
 

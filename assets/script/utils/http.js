@@ -21,6 +21,23 @@ function getLoading() {
   })
 }
 
+/**
+ * 显示toast
+ */
+function showToast(text = '', duration = 4) {
+  cc.resources.load('prefab/toast', cc.Prefab, (error, assets) => {
+    if (error) {
+      return
+    } else {
+      const toast = cc.instantiate(assets)
+      const canvas = cc.director.getScene().getChildByName('Canvas')
+      canvas.addChild(toast)
+      const script = toast.getComponent('toast')
+      script.show(text, duration)
+    }
+  })
+}
+
 var baseURL = 'http://segeg.free.idcfengye.com'
 
 function encode(val) {
