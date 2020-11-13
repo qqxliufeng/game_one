@@ -15,7 +15,8 @@ cc.Class({
   //     controller.init({
   //       callback: () => {
   //         controller.node.parent.active = false
-  //         console.log('点击了')
+  //         location.search = 'type=study'
+  //         console.log(window.location.search)
   //       }
   //     })
   //   })
