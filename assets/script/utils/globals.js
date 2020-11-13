@@ -106,6 +106,12 @@ module.exports = {
             break
         }
       }
+    },
+    /**
+     * 生成学习记录报告
+     */
+    generatorReport() {
+
     }
   }
 }

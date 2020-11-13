@@ -1,4 +1,4 @@
-const { reviewDataModel } = require('../utils/globals');
+const { reviewDataModel, getReviewScene } = require('../utils/globals');
 const BaseClass = require('./BaseClass');
 
 const SPRITE_NAME = 'texture/pic_wg_megu'
@@ -9,6 +9,17 @@ cc.Class({
   getSpriteName() {
     return SPRITE_NAME
   },
+
+  // onLoad() {
+  //   getSuccessDialog().then(controller => {
+  //     controller.init({
+  //       callback: () => {
+  //         controller.node.parent.active = false
+  //         console.log('点击了')
+  //       }
+  //     })
+  //   })
+  // },
 
   initPrefab(word, position, sprite, text) {
     word.text = text

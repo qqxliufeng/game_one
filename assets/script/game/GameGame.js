@@ -1,4 +1,3 @@
-const BaseClass = require('../utils/BaseClass')
 const { WORD_ITEM_WIDTH } = require("../utils/globals")
 
 const PRE_FAB_NAME = 'prefab/word_item'
@@ -131,7 +130,7 @@ function getItemName() {
 }
 
 cc.Class({
-  extends: BaseClass,
+  extends: cc.Component,
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true

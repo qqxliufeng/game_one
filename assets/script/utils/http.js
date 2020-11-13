@@ -38,6 +38,24 @@ function showToast(text = '', duration = 4) {
   })
 }
 
+/**
+ * 加载闯关成功对话框
+ */
+function getSuccessDialog() {
+  return new Promise(function (resolve, reject) {
+    cc.resources.load('prefab/level_success_tip', cc.Prefab, (error, assets) => {
+      if (error) {
+        reject('对话框加载失败…')
+      } else {
+        const item = cc.instantiate(assets)
+        const canvas = cc.director.getScene().getChildByName('Canvas')
+        canvas.addChild(item)
+        resolve(item.getChildByName('SuccessDialog').getComponent(cc.Component))
+      }
+    })
+  })
+}
+
 var baseURL = 'http://segeg.free.idcfengye.com'
 
 function encode(val) {
