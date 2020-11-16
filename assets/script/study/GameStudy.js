@@ -108,6 +108,7 @@ cc.Class({
           type: 2
         }
       }).then(res => {
+        this.submitSuccess = false
         controller.close()
         if (res.code === 200) {
           this.dataModel = res.data
@@ -131,7 +132,8 @@ cc.Class({
     const everyScreenClient = parseInt(this.parent.width / ROW_WORD_COUNT)
     let index = 0
     const sprite = atlas.getSpriteFrame(item.sprite)
-    this.refresh().forEach(it => {
+    this.tempListWord = this.refresh()
+    this.tempListWord.forEach(it => {
       cc.resources.load('prefab/study_word_item', cc.Prefab, (error, asset) => {
         const prefab = cc.instantiate(asset)
         this.parent.addChild(prefab)
@@ -150,18 +152,48 @@ cc.Class({
           position,
           size,
           textFont: {
-            label: it,
+            label: it.text,
             color: item.color,
             position: item.position
           },
-          clickCallBack: (text) => {
-            playRemoteAudio('http://192.168.1.104:7456/app/editor/static/img/make.mp3')
+          clickCallBack: (word) => {
+            const tempItem = this.tempListWord.find(it => it.text === word)
+            tempItem.status = 1
+            playRemoteAudio(audioAddress + tempItem.href)
             this.bigWord.refresh({
               type: item.type,
               textFont: {
-                label: text
+                label: tempItem.text
               }
             })
+            const result = this.tempListWord.some(it => it.status === 0)
+            if (!result) {
+              if (!this.submitSuccess) {
+                post({
+                  url: record,
+                  data: this.tempListWord.map(it => {
+                    return {
+                      loreId: it.loreId,
+                      operatorType: 2,
+                      result: 1
+                    }
+                  })
+                }).then(res => {
+                  this.submitSuccess = true
+                }).catch(error => {
+                  console.log(error)
+                })
+              }
+              this.scheduleOnce(() => {
+                getSuccessDialog().then(controller => {
+                  controller.init({
+                    callback: () => {
+                      controller.node.parent.active = false
+                    }
+                  })
+                })
+              }, 4)
+            }
           }
         })
         index++
@@ -187,12 +219,13 @@ cc.Class({
   },
 
   refresh() {
-    const list = ['阳', '春', '三', '月', '花', '好']
-    const set = new Set()
-    while (set.size < 6) {
-      set.add(list[Math.floor(Math.random() * 6)])
-    }
-    return set
+    return this.dataModel.map(it => {
+      const item = it.loreObject.list[0]
+      // 添加status属性，0代表没有点击，没有学习；1代表已经点击学习过了 
+      item.loreId = it.id
+      item.status = 0
+      return item
+    })
   },
 
   onDestroy() {

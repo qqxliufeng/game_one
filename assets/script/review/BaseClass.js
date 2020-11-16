@@ -28,7 +28,7 @@ module.exports = cc.Class({
       post({
         url: findKnowDetail,
         data: {
-          type: 1
+          type: 2
         }
       }).then(res => {
         controller.close()

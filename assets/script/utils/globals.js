@@ -49,10 +49,13 @@ module.exports = {
   getSpriteSize(sprite, width = WORD_ITEM_WIDTH) {
     return { width, height: parseInt(width * sprite.getRect().height / sprite.getRect().width) }
   },
-  reviewDataModel: {
+  baseDataModel: {
     _dataList: [],
     _tempItem: null,
-    init(srcList) {
+    isNotEmpty() {
+      return this._dataList && this._dataList.length > 0
+    },
+    init(srcList, type) {
       this._dataList = srcList
       if (this._dataList) {
         this._dataList.forEach(it => {
@@ -111,7 +114,18 @@ module.exports = {
      * 生成学习记录报告
      */
     generatorReport() {
-
-    }
+      return this._dataList.map(it => {
+        return {
+          loreId: it.loreId,
+          operatorType: it.type,
+          result: it.state
+        }
+      })
+    },
+    reset() {
+      this._dataList = []
+      this._tempItem = null
+      this._currentType = -1
+    },
   }
 }
