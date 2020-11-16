@@ -83,10 +83,44 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
-    parent: cc.Node
+    parent: cc.Node,
+    successTip: {
+      type: cc.AudioClip,
+      default: null
+    },
+    errorTip: {
+      type: cc.AudioClip,
+      default: null
+    }
   },
 
   onLoad() {
+    cc.director.getCollisionManager().enabled = true
+    cc.director.getCollisionManager().enabledDebugDraw = true
+    getLoading().then((controller) => {
+      post({
+        url: findKnowDetail,
+        data: {
+          type: 4
+        }
+      }).then(res => {
+        controller.close()
+        baseDataModel.init(res.data.map(it => {
+          return {
+            loreObject: it.loreObject,
+            loreId: it.id,
+            type: 4
+          }
+        }))
+        this.wordItem = baseDataModel.getItemModel()
+        if (this.wordItem) {
+          this.init()
+        }
+      }).catch(error => {
+        controller.close()
+        showToast(error.message)
+      })
+    })
     this.itemNameInfo = getItemName()
     cc.resources.load('texture/apply/pic_yy_bg_' + this.itemNameInfo.bg, cc.SpriteFrame, (error, spriteFrame) => {
       this.parent.getComponent(cc.Sprite).spriteFrame = spriteFrame
@@ -101,17 +135,17 @@ cc.Class({
   initTopSprite() {
     const everyScreenWidth = this.parent.width / TOP_ITEM_LINE_COUNT
     for (let i = 0; i < TOP_ITEM_LINE_COUNT; i++) {
-      cc.resources.load(WORD_PRE_FAB_NAME, cc.Prefab, (error, assets) => {
+      cc.resources.load('prefab/apply_top_word_item', cc.Prefab, (error, assets) => {
         const wordItem = cc.instantiate(assets)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
-          const size = getSpriteSize(spriteFrame)
+          const size = getSpriteSize(spriteFrame, spriteFrame.getRect().width * this.itemNameInfo.scale)
           this.initPrefab(wordItem, {
             x: everyScreenWidth / 2 + everyScreenWidth * i - this.parent.width / 2,
             y: this.parent.y + this.parent.height / 2 - this.parent.height / 5,
             width: size.width,
             height: size.height,
             scale: this.itemNameInfo.scale
-          }, spriteFrame)
+          }, spriteFrame, i === 3, 'TopWordItem')
         })
       })
     }
@@ -126,7 +160,7 @@ cc.Class({
       cc.resources.load(WORD_PRE_FAB_NAME, cc.Prefab, (error, assets) => {
         const wordItem = cc.instantiate(assets)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
-          const size = getSpriteSize(spriteFrame)
+          const size = getSpriteSize(spriteFrame, spriteFrame.getRect().width * this.itemNameInfo.scale)
           const div = parseInt(i / BOTTOM_ITEM_LINE_COUNT)
           const mod = i % BOTTOM_ITEM_LINE_COUNT
           this.initPrefab(wordItem, {
@@ -135,28 +169,29 @@ cc.Class({
             width: size.width,
             height: size.height,
             scale: this.itemNameInfo.scale * 1.5
-          }, spriteFrame)
+          }, spriteFrame, true, 'WordItem')
         })
       })
     }
   },
 
-  initPrefab(word, position, sprite) {
+  initPrefab(word, position, sprite, addCollider, scriptName) {
     this.parent.addChild(word)
-    const script = word.getComponent('WordItem')
+    const script = word.getComponent(scriptName)
     script.init({
       parentParams: {
         x: position.x,
         y: position.y,
         width: position.width,
         height: position.height,
-        scale: position.scale
+        scale: position.scale,
+        addCollider
       },
       spriteParams: {
         spriteFrame: sprite
       },
       textParams: {
-        label: this.itemNameInfo.font.label || '耀',
+        label: this.itemNameInfo.font.label || '',
         fontSize: this.itemNameInfo.font.fontSize,
         color: this.itemNameInfo.font.color,
         x: this.itemNameInfo.font.x,
@@ -164,8 +199,18 @@ cc.Class({
       },
       otherParams: {
         callback: () => {
-          script.backTween()
-          this.refresh()
+          const { isCollided, other } = this.collisionManager.isCollisionAndRight()
+          if (isCollided) {
+            if (other.node.text === this.corroctItem.text) {
+              this.playSuccessTip(word)
+              this.doSuccessAction()
+            } else {
+              this.playErrorTip(script)
+              this.doErrorAction(script)
+            }
+          } else {
+            this.doErrorAction(script)
+          }
         }
       }
     })
@@ -179,5 +224,15 @@ cc.Class({
     //   TOP_ITEMS[index].getComponent('WordItem').setText(it)
     // })
     cc.director.loadScene('game_apply')
+  },
+
+  playSuccessTip(word) {
+    cc.audioEngine.play(this.successTip, false, 1)
+  },
+
+  playErrorTip() {
+    cc.audioEngine.play(this.errorTip, false, 1)
   }
+
+
 });

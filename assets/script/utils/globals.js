@@ -55,7 +55,7 @@ module.exports = {
     isNotEmpty() {
       return this._dataList && this._dataList.length > 0
     },
-    init(srcList, type) {
+    init(srcList) {
       this._dataList = srcList
       if (this._dataList) {
         this._dataList.forEach(it => {
@@ -125,7 +125,6 @@ module.exports = {
     reset() {
       this._dataList = []
       this._tempItem = null
-      this._currentType = -1
     },
   }
 }

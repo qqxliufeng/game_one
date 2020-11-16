@@ -10,18 +10,6 @@ cc.Class({
     return SPRITE_NAME
   },
 
-  // onLoad() {
-  //   getSuccessDialog().then(controller => {
-  //     controller.init({
-  //       callback: () => {
-  //         controller.node.parent.active = false
-  //         location.search = 'type=study'
-  //         console.log(window.location.search)
-  //       }
-  //     })
-  //   })
-  // },
-
   initPrefab(word, position, sprite, text) {
     word.text = text
     this.parent.addChild(word)

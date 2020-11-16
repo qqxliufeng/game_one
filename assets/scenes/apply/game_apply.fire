@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        330.8217042456556,
+        329.08213585645666,
         0,
         0,
         0,
@@ -471,6 +471,12 @@
     "_enabled": true,
     "parent": {
       "__id__": 5
+    },
+    "successTip": {
+      "__uuid__": "f41ea56d-6849-4520-bae4-56ceb6660c8f"
+    },
+    "errorTip": {
+      "__uuid__": "6bebba1e-30ea-4e41-be69-8085c5705aae"
     },
     "_id": "78OofqdFBMqL45UAvxgzY8"
   }

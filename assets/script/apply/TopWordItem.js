@@ -1,30 +1,6 @@
 cc.Class({
   extends: cc.Component,
 
-  onLoad() {
-    this.node.on(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this)
-    this.node.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this)
-    this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.touchEnd, this)
-  },
-
-  touchMove(e) {
-    this.node.setPosition(this.node.x + e.getDeltaX(), this.node.y + e.getDeltaY())
-    this.node.scale = Math.min(this.defaultScale, Math.max(0.3, 1 - cc.v2(this.node.x, this.node.y).sub(cc.v2(this.defaultPosition.x, this.defaultPosition.y)).len() / 500))
-  },
-
-  touchEnd(e) {
-    if (this.callback) {
-      this.callback()
-    } else {
-      this.backTween()
-    }
-  },
-
-  backTween() {
-    // cc.audioEngine.play(this.errorClip, false, 1)
-    cc.tween(this.node).to(1, { position: this.defaultPosition, scale: this.defaultScale }, { easing: 'elasticOut' }).start()
-  },
-
   /**
    * 初始化预制体
    * @param {*} params 
