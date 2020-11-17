@@ -1,4 +1,3 @@
-const { reviewDataModel, getReviewScene } = require('../utils/globals');
 const BaseClass = require('./BaseClass');
 
 const SPRITE_NAME = 'texture/pic_wg_megu'

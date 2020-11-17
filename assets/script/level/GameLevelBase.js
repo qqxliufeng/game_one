@@ -1,46 +1,61 @@
+const Base = require("../utils/Base");
+const { levelDataModel, getLevelScene } = require("../utils/globals");
+
 cc.Class({
-  extends: cc.Component,
+  extends: Base,
 
   properties: {
     wordItem1: cc.Node,
     wordItem2: cc.Node,
-    targetText1: cc.Label,
-    targetText2: cc.Label
+    targetText1: cc.Node,
+    targetText2: cc.Node
   },
 
   onLoad() {
-    // cc.director.getCollisionManager().enabled = true
-    // cc.director.getCollisionManager().enabledDebugDraw = true
+    cc.director.getCollisionManager().enabled = true
+    cc.director.getCollisionManager().enabledDebugDraw = true
+    this.bootStart()
+  },
+
+  init() {
+    levelDataModel.initItem()
     this.initWordItem(this.wordItem1)
     this.initWordItem(this.wordItem2)
-    getLoading().then((loadingController) => {
-      this.loadingController = loadingController
-      this.loadingController.show()
-      post({
-        url: 'doLogin',
-        data: {
-          phone: '18800000000',
-          password: '123123'
-        }
-      }).then(res => {
-        console.log(res)
-        this.loadingController.close()
-      })
-    })
+    this.setConfig()
+  },
+
+  getType() {
+    return 5
+  },
+
+  getDataModel() {
+    return levelDataModel
   },
 
   initWordItem(wordItem) {
     wordItem.on(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this)
     wordItem.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this)
     wordItem.on(cc.Node.EventType.TOUCH_CANCEL, this.touchEnd, this)
+  },
+
+  setConfig() {
     this.wordItem1.rawInfo = {
       position: this.wordItem1.getPosition(),
-      scale: this.wordItem1.scale
+      scale: this.wordItem1.scale,
+      ...this.sceneItem.bottomTextItems[0]
     }
+    this.wordItem1.getChildByName('text').getComponent(cc.Label).string = this.wordItem1.rawInfo.textObj.text
     this.wordItem2.rawInfo = {
       position: this.wordItem2.getPosition(),
-      scale: this.wordItem2.scale
+      scale: this.wordItem2.scale,
+      ...this.sceneItem.bottomTextItems[1]
     }
+    this.wordItem2.getChildByName('text').getComponent(cc.Label).string = this.wordItem2.rawInfo.textObj.text
+    this.targetText1.tempIndex = 1
+    this.targetText2.tempIndex = 2
+    // 0 没有答 1 正确 2 错误
+    this.targetText1.tempState = 0
+    this.targetText2.tempState = 0
   },
 
   touchMove(e) {
@@ -49,22 +64,52 @@ cc.Class({
   },
 
   touchEnd(e) {
-    cc.tween(e.target).to(1, { position: e.target.rawInfo.position, scale: e.target.rawInfo.scale }, { easing: 'elasticOut' }).start()
-    post({
-      url: 'doLogin',
-      data: {
-        phone: '18800000000',
-        password: '123123'
-      },
-      beforeRequest: () => {
-        this.loadingController.show()
-      },
-      afterRequest: () => {
-        this.loadingController.close()
+    const { isCollided, other } = e.target.getComponent('CollideListener').isCollisionAndRight()
+    if (isCollided) {
+      if (other.node.tempIndex === e.target.rawInfo.index) {
+        other.node.tempState = 1
+        if (this.targetText1.tempState !== 1) {
+          other.node.tempState = 0
+          cc.tween(e.target).to(1, { position: e.target.rawInfo.position, scale: e.target.rawInfo.scale }, { easing: 'elasticOut' }).start()
+          return
+        }
+        this.playSuccessTip(e.target)
+        this.doSuccessAction(e.target)
+      } else {
+        other.node.tempState = 2
+        this.playErrorTip()
+        this.doErrorAction(e.target)
+        cc.tween(e.target).to(1, { position: e.target.rawInfo.position, scale: e.target.rawInfo.scale }, { easing: 'elasticOut' }).start()
       }
-    }).then(res => {
-      console.log(res)
-    })
+    } else {
+      other.node.tempState = 0
+      cc.tween(e.target).to(1, { position: e.target.rawInfo.position, scale: e.target.rawInfo.scale }, { easing: 'elasticOut' }).start()
+    }
+  },
+
+  doSuccessAction(tempNode) {
+    levelDataModel.setCorrectState(this.sceneItem)
+    if (this.targetText1.tempState === 1) {
+      this.targetText1.getChildByName('text').getComponent(cc.Label).string = tempNode.rawInfo.textObj.text
+    }
+    if (this.targetText2.tempState === 1) {
+      this.targetText2.getChildByName('text').getComponent(cc.Label).string = tempNode.rawInfo.textObj.text
+    }
+    if (this.targetText1.tempState === 1 && this.targetText2.tempState === 1) {
+      cc.audioEngine.play(this.successTip, false, 1)
+      this.scheduleOnce(() => {
+        cc.director.loadScene(this.getNextScene())
+      }, 1)
+    }
+  },
+
+  doErrorAction(tempNode) {
+    levelDataModel.setErrorState(this.sceneItem)
+    tempNode.rawInfo.state = 2
+  },
+
+  getNextScene() {
+    return getLevelScene()
   },
 
   onDestroy() {

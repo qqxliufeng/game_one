@@ -1,5 +1,5 @@
-const { WORD_ITEM_WIDTH, baseDataModel } = require("../utils/globals")
-const BaseGameClass = require('./BaseGameClass')
+const Base = require("../utils/Base")
+const { WORD_ITEM_WIDTH, baseDataModel, getGameScene } = require("../utils/globals")
 
 const PRE_FAB_NAME = 'prefab/word_item'
 
@@ -131,7 +131,11 @@ function getItemName() {
 }
 
 cc.Class({
-  extends: BaseGameClass,
+  extends: Base,
+
+  getType() {
+    return 3
+  },
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
@@ -140,43 +144,17 @@ cc.Class({
     cc.resources.preload('texture/game/pic_chg_' + this.itemInfo.animalName + '_2', cc.spriteFrame)
     cc.resources.load('texture/game/bg_chg_' + this.itemInfo.bg, cc.SpriteFrame, (error, spriteFrame) => {
       this.parent.getComponent(cc.Sprite).spriteFrame = spriteFrame
+      this.bootStart()
     })
-    if (baseDataModel.isNotEmpty()) {
-      this.wordItem = baseDataModel.getItemModel()
-      if (this.wordItem) {
-        this.init()
-      }
-    } else {
-      getLoading().then((controller) => {
-        post({
-          url: findKnowDetail,
-          data: {
-            type: 3
-          }
-        }).then(res => {
-          controller.close()
-          baseDataModel.init(res.data.map(it => {
-            return {
-              loreObject: it.loreObject,
-              loreId: it.id,
-              type: 3
-            }
-          }))
-          this.wordItem = baseDataModel.getItemModel()
-          if (this.wordItem) {
-            this.init()
-          }
-        }).catch(error => {
-          controller.close()
-          showToast(error.message)
-        })
-      })
-    }
   },
 
   init() {
     this.initAnimal()
     this.initFood()
+  },
+
+  getDataModel() {
+    return baseDataModel
   },
 
   initAnimal() {
@@ -218,7 +196,7 @@ cc.Class({
 
   initFood() {
     cc.resources.load('texture/game/pic_chg_' + this.itemInfo.foodName, cc.SpriteFrame, (error, sprite) => {
-      const wordTextList = this.randomText(this.wordItem.loreObject.list)
+      const wordTextList = this.randomText(this.sceneItem.loreObject.list)
       for (let i = 0; i < 2; i++) {
         cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
           const width = WORD_ITEM_WIDTH
@@ -276,5 +254,9 @@ cc.Class({
         }
       }
     })
+  },
+
+  getNextScene() {
+    return getGameScene()
   }
 });

@@ -22,6 +22,10 @@ module.exports = cc.Class({
     this.initWordItem(this.getSpriteName(), wordText[0].text, wordText[1].text)
   },
 
+  getDataModel() {
+    return baseDataModel
+  },
+
   initWordItem(spriteName, leftText = '', rightText = '') {
     cc.director.getCollisionManager().enabled = true
     this.collisionManager = this.animal.getComponent('CollideListener')

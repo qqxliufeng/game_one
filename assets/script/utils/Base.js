@@ -1,5 +1,3 @@
-const { baseDataModel } = require("./globals");
-
 module.exports = cc.Class({
   extends: cc.Component,
 
@@ -41,8 +39,8 @@ module.exports = cc.Class({
    * 初始化数据引擎
    */
   bootStart() {
-    if (baseDataModel.isNotEmpty()) {
-      this.sceneItem = baseDataModel.getItemModel()
+    if (this.getDataModel().isNotEmpty()) {
+      this.sceneItem = this.getDataModel().getItemModel()
       if (this.sceneItem) {
         this.init()
       }
@@ -56,14 +54,15 @@ module.exports = cc.Class({
         }).then(res => {
           controller.close()
           if (res.code === 200) {
-            baseDataModel.init(res.data.map(it => {
+            const handleFunc = this.initOriginalData || (it => {
               return {
                 loreObject: it.loreObject,
                 loreId: it.id,
                 type: this.getType() || 1
               }
-            }))
-            this.sceneItem = baseDataModel.getItemModel()
+            })
+            this.getDataModel().init(res.data.map(handleFunc))
+            this.sceneItem = this.getDataModel().getItemModel()
             if (this.sceneItem) {
               this.init()
             }
@@ -164,7 +163,7 @@ module.exports = cc.Class({
    * 执行操作成功的动作
    */
   doSuccessAction() {
-    baseDataModel.setCorrectState(this.sceneItem)
+    this.getDataModel().setCorrectState(this.sceneItem)
     const animation = this.animal ? this.animal.getComponent(cc.Animation) : null
     if (animation) {
       animation.on('finished', () => {
@@ -182,15 +181,15 @@ module.exports = cc.Class({
   },
 
   doErrorAction(script) {
-    baseDataModel.setErrorState(this.sceneItem)
-    script.backTween()
+    this.getDataModel().setErrorState(this.sceneItem)
+    script && script.backTween()
   },
 
   /**
    * 判断是否是提交报告还是继续学习
    */
   uploadOrNext() {
-    const item = baseDataModel.getItemModel()
+    const item = this.getDataModel().getItemModel()
     if (item) {
       this.scheduleOnce(() => {
         cc.director.loadScene(this.getNextScene())
@@ -199,7 +198,7 @@ module.exports = cc.Class({
       getLoading().then((controller) => {
         post({
           url: record,
-          data: baseDataModel.generatorReport()
+          data: this.getDataModel().generatorReport()
         }).then(res => {
           controller.close()
           if (res.code === 200) {

@@ -84,44 +84,31 @@ cc.Class({
     this.itemNameInfo = getItemName()
     cc.resources.load('texture/apply/pic_yy_bg_' + this.itemNameInfo.bg, cc.SpriteFrame, (error, spriteFrame) => {
       this.parent.getComponent(cc.Sprite).spriteFrame = spriteFrame
-      if (applyDataModel.isNotEmpty()) {
-        this.sceneItem = applyDataModel.getItemModel()
-        if (this.sceneItem) {
-          applyDataModel.initItem()
-          this.initTopSprite()
-          this.initBottomSprite()
-        }
-      } else {
-        getLoading().then((controller) => {
-          post({
-            url: findKnowDetail,
-            data: {
-              type: 4
-            }
-          }).then(res => {
-            controller.close()
-            applyDataModel.init(res.data.map(it => {
-              return {
-                loreObject: it.loreObject,
-                loreId: it.id,
-                indexOf: it.index_of,
-                type: 4
-              }
-            }))
-            this.sceneItem = applyDataModel.getItemModel()
-            if (this.sceneItem) {
-              console.log(this.sceneItem)
-              applyDataModel.initItem()
-              this.initTopSprite()
-              this.initBottomSprite()
-            }
-          }).catch(error => {
-            controller.close()
-            showToast(error.message)
-          })
-        })
-      }
+      this.bootStart()
     })
+  },
+
+  init() {
+    applyDataModel.initItem()
+    this.initTopSprite()
+    this.initBottomSprite()
+  },
+
+  getType() {
+    return 4
+  },
+
+  getDataModel() {
+    return applyDataModel
+  },
+
+  initOriginalData(it) {
+    return {
+      loreObject: it.loreObject,
+      loreId: it.id,
+      indexOf: it.index_of,
+      type: 4
+    }
   },
 
   /**
@@ -212,6 +199,12 @@ cc.Class({
           } else {
             this.doErrorAction(script)
           }
+        },
+        playAudio: (text) => {
+          // const tmp = this.sceneItem.loreObject.list.find(it => {
+          //   it.text === text
+          // })
+          // playRemoteAudio(audioAddress + tmp.href)
         }
       }
     })

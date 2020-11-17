@@ -1,6 +1,14 @@
 cc.Class({
   extends: cc.Component,
 
+  onLoad() {
+    this.node.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this)
+  },
+
+  touchEnd() {
+    this.playAudio && this.playAudio(this.node.text)
+  },
+
   /**
    * 初始化预制体
    * @param {*} params 
@@ -78,5 +86,6 @@ cc.Class({
    */
   setOtherParams(otherParams) {
     this.callback = otherParams.callback
+    this.playAudio = otherParams.playAudio
   }
 });
