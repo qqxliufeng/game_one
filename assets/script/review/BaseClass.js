@@ -10,7 +10,7 @@ module.exports = cc.Class({
   },
 
   getType() {
-    return 3
+    return 1
   },
 
   init() {

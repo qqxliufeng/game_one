@@ -165,7 +165,7 @@ module.exports = cc.Class({
    */
   doSuccessAction() {
     baseDataModel.setCorrectState(this.sceneItem)
-    const animation = this.animal.getComponent(cc.Animation)
+    const animation = this.animal ? this.animal.getComponent(cc.Animation) : null
     if (animation) {
       animation.on('finished', () => {
         this.uploadOrNext()

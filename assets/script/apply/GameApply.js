@@ -1,4 +1,5 @@
-const { WORD_PRE_FAB_NAME, getSpriteSize } = require("../utils/globals")
+const Base = require("../utils/Base")
+const { WORD_PRE_FAB_NAME, getSpriteSize, applyDataModel, getApplyScene } = require("../utils/globals")
 
 const APPLY_GAME_ITEM_LIST = [
   {
@@ -69,63 +70,57 @@ const APPLY_GAME_ITEM_LIST = [
   }
 ]
 
-const TOP_ITEM_LINE_COUNT = 4
-
 const BOTTOM_ITEM_LINE_COUNT = 2
-
-const BOTTOM_ITEMS = []
 
 function getItemName() {
   return APPLY_GAME_ITEM_LIST[Math.floor(Math.random() * APPLY_GAME_ITEM_LIST.length)]
 }
 
 cc.Class({
-  extends: cc.Component,
-
-  properties: {
-    parent: cc.Node,
-    successTip: {
-      type: cc.AudioClip,
-      default: null
-    },
-    errorTip: {
-      type: cc.AudioClip,
-      default: null
-    }
-  },
+  extends: Base,
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
-    cc.director.getCollisionManager().enabledDebugDraw = true
-    getLoading().then((controller) => {
-      post({
-        url: findKnowDetail,
-        data: {
-          type: 4
-        }
-      }).then(res => {
-        controller.close()
-        baseDataModel.init(res.data.map(it => {
-          return {
-            loreObject: it.loreObject,
-            loreId: it.id,
-            type: 4
-          }
-        }))
-        this.wordItem = baseDataModel.getItemModel()
-        if (this.wordItem) {
-          this.init()
-        }
-      }).catch(error => {
-        controller.close()
-        showToast(error.message)
-      })
-    })
     this.itemNameInfo = getItemName()
     cc.resources.load('texture/apply/pic_yy_bg_' + this.itemNameInfo.bg, cc.SpriteFrame, (error, spriteFrame) => {
       this.parent.getComponent(cc.Sprite).spriteFrame = spriteFrame
-      this.initTopSprite()
-      this.initBottomSprite()
+      if (applyDataModel.isNotEmpty()) {
+        this.sceneItem = applyDataModel.getItemModel()
+        if (this.sceneItem) {
+          applyDataModel.initItem()
+          this.initTopSprite()
+          this.initBottomSprite()
+        }
+      } else {
+        getLoading().then((controller) => {
+          post({
+            url: findKnowDetail,
+            data: {
+              type: 4
+            }
+          }).then(res => {
+            controller.close()
+            applyDataModel.init(res.data.map(it => {
+              return {
+                loreObject: it.loreObject,
+                loreId: it.id,
+                indexOf: it.index_of,
+                type: 4
+              }
+            }))
+            this.sceneItem = applyDataModel.getItemModel()
+            if (this.sceneItem) {
+              console.log(this.sceneItem)
+              applyDataModel.initItem()
+              this.initTopSprite()
+              this.initBottomSprite()
+            }
+          }).catch(error => {
+            controller.close()
+            showToast(error.message)
+          })
+        })
+      }
     })
   },
 
@@ -133,19 +128,20 @@ cc.Class({
    * 初始化顶部的精灵
    */
   initTopSprite() {
-    const everyScreenWidth = this.parent.width / TOP_ITEM_LINE_COUNT
-    for (let i = 0; i < TOP_ITEM_LINE_COUNT; i++) {
+    const count = this.sceneItem.topTextItems.length
+    const everyScreenWidth = this.parent.width / count
+    for (let i = 0; i < count; i++) {
       cc.resources.load('prefab/apply_top_word_item', cc.Prefab, (error, assets) => {
         const wordItem = cc.instantiate(assets)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
           const size = getSpriteSize(spriteFrame, spriteFrame.getRect().width * this.itemNameInfo.scale)
-          this.initPrefab(wordItem, {
+          this.initPrefab(wordItem, this.sceneItem.topTextItems[i], {
             x: everyScreenWidth / 2 + everyScreenWidth * i - this.parent.width / 2,
             y: this.parent.y + this.parent.height / 2 - this.parent.height / 5,
             width: size.width,
             height: size.height,
             scale: this.itemNameInfo.scale
-          }, spriteFrame, i === 3, 'TopWordItem')
+          }, spriteFrame, i === (this.sceneItem.indexOf - 1), 'TopWordItem')
         })
       })
     }
@@ -156,14 +152,15 @@ cc.Class({
    */
   initBottomSprite() {
     const everyScreenWidth = this.parent.width / BOTTOM_ITEM_LINE_COUNT
-    for (let i = 0; i < BOTTOM_ITEM_LINE_COUNT * 2; i++) {
+    const tempArray = Array.from(this.sceneItem.bottomTextItems)
+    for (let i = 0; i < this.sceneItem.bottomTextItems.size; i++) {
       cc.resources.load(WORD_PRE_FAB_NAME, cc.Prefab, (error, assets) => {
         const wordItem = cc.instantiate(assets)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
           const size = getSpriteSize(spriteFrame, spriteFrame.getRect().width * this.itemNameInfo.scale)
           const div = parseInt(i / BOTTOM_ITEM_LINE_COUNT)
           const mod = i % BOTTOM_ITEM_LINE_COUNT
-          this.initPrefab(wordItem, {
+          this.initPrefab(wordItem, tempArray[i].text, {
             x: everyScreenWidth / 2 + everyScreenWidth * mod - this.parent.width / 2,
             y: (this.parent.y - this.parent.height / 2 + this.parent.height / 5) + div * (size.height + 150),
             width: size.width,
@@ -175,7 +172,11 @@ cc.Class({
     }
   },
 
-  initPrefab(word, position, sprite, addCollider, scriptName) {
+  initPrefab(word, label, position, sprite, addCollider, scriptName) {
+    if (addCollider && scriptName === 'TopWordItem') {
+      this.collisionManager = word.getComponent('CollideListener')
+    }
+    word.text = label
     this.parent.addChild(word)
     const script = word.getComponent(scriptName)
     script.init({
@@ -191,7 +192,7 @@ cc.Class({
         spriteFrame: sprite
       },
       textParams: {
-        label: this.itemNameInfo.font.label || '',
+        label: scriptName === 'WordItem' ? label : addCollider ? '' : label,
         fontSize: this.itemNameInfo.font.fontSize,
         color: this.itemNameInfo.font.color,
         x: this.itemNameInfo.font.x,
@@ -201,7 +202,7 @@ cc.Class({
         callback: () => {
           const { isCollided, other } = this.collisionManager.isCollisionAndRight()
           if (isCollided) {
-            if (other.node.text === this.corroctItem.text) {
+            if (other.node.text === this.sceneItem.loreObject.text) {
               this.playSuccessTip(word)
               this.doSuccessAction()
             } else {
@@ -216,23 +217,39 @@ cc.Class({
     })
   },
 
-  /**
-   * 刷新界面
-   */
-  refresh() {
-    // ['王', '者', '荣', '耀'].forEach((it, index) => {
-    //   TOP_ITEMS[index].getComponent('WordItem').setText(it)
-    // })
-    cc.director.loadScene('game_apply')
+  uploadOrNext() {
+    const item = applyDataModel.getItemModel()
+    if (item) {
+      this.scheduleOnce(() => {
+        cc.director.loadScene(this.getNextScene())
+      }, 1)
+    } else {
+      getLoading().then((controller) => {
+        post({
+          url: record,
+          data: applyDataModel.generatorReport()
+        }).then(res => {
+          controller.close()
+          if (res.code === 200) {
+            getSuccessDialog().then(controller => {
+              controller.init({
+                callback: () => {
+                  controller.node.parent.active = false
+                }
+              })
+            })
+          } else {
+            showToast(res.msg)
+          }
+        }).catch(error => {
+          controller.close()
+          showToast(error.message)
+        })
+      })
+    }
   },
 
-  playSuccessTip(word) {
-    cc.audioEngine.play(this.successTip, false, 1)
-  },
-
-  playErrorTip() {
-    cc.audioEngine.play(this.errorTip, false, 1)
+  getNextScene() {
+    return getApplyScene()
   }
-
-
 });

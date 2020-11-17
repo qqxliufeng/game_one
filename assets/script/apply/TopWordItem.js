@@ -58,6 +58,7 @@ cc.Class({
     textComponent.fontSize = fontSize
     textNode.setPosition(x, y)
     textNode.color = color
+    textNode.active = !!label
   },
 
   /**
