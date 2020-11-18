@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        330.1586535458831,
+        1155.2778886484411,
         0,
         0,
         0,
@@ -1480,7 +1480,9 @@
     },
     "_enabled": true,
     "parent": null,
-    "animal": null,
+    "animal": {
+      "__id__": 6
+    },
     "successTip": {
       "__uuid__": "e8b9349a-5dbd-45ae-baab-510f2a261651"
     },

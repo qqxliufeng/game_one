@@ -6,7 +6,7 @@ cc.Class({
   },
 
   touchEnd() {
-    this.playAudio && this.playAudio(this.node.text)
+    this.playAudio && this.playAudio()
   },
 
   /**

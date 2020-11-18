@@ -1660,7 +1660,9 @@
     },
     "_enabled": true,
     "parent": null,
-    "animal": null,
+    "animal": {
+      "__id__": 6
+    },
     "successTip": {
       "__uuid__": "f4f2ad41-f14e-4ced-9e0b-4b76c3b3e610"
     },

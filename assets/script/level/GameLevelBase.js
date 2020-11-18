@@ -15,6 +15,7 @@ cc.Class({
     cc.director.getCollisionManager().enabled = true
     cc.director.getCollisionManager().enabledDebugDraw = true
     this.bootStart()
+    console.log(levelDataModel._dataList)
   },
 
   init() {
@@ -33,6 +34,7 @@ cc.Class({
   },
 
   initWordItem(wordItem) {
+    this.animal.on(cc.Node.EventType.TOUCH_END, this.animalTouchEnd, this)
     wordItem.on(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this)
     wordItem.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this)
     wordItem.on(cc.Node.EventType.TOUCH_CANCEL, this.touchEnd, this)
@@ -63,6 +65,12 @@ cc.Class({
     e.target.scale = Math.min(e.target.rawInfo.scale, Math.max(0.3, 1 - cc.v2(e.target.x, e.target.y).sub(cc.v2(e.target.rawInfo.position.x, e.target.rawInfo.position.y)).len() / 500))
   },
 
+  animalTouchEnd() {
+    if (this.sceneItem) {
+      playRemoteAudio(audioAddress + this.sceneItem.loreObject.list[0].href)
+    }
+  },
+
   touchEnd(e) {
     const { isCollided, other } = e.target.getComponent('CollideListener').isCollisionAndRight()
     if (isCollided) {
@@ -88,15 +96,19 @@ cc.Class({
   },
 
   doSuccessAction(tempNode) {
-    levelDataModel.setCorrectState(this.sceneItem)
     if (this.targetText1.tempState === 1) {
-      this.targetText1.getChildByName('text').getComponent(cc.Label).string = tempNode.rawInfo.textObj.text
+      const label = this.targetText1.childrenCount === 1 ? this.targetText1.getChildByName('text').getComponent(cc.Label) : this.targetText1.getComponent(cc.Label)
+      if (!label.string) {
+        label.string = tempNode.rawInfo.textObj.text
+      }
     }
     if (this.targetText2.tempState === 1) {
-      this.targetText2.getChildByName('text').getComponent(cc.Label).string = tempNode.rawInfo.textObj.text
+      const label2 = this.targetText2.childrenCount === 1 ? this.targetText2.getChildByName('text').getComponent(cc.Label) : this.targetText2.getComponent(cc.Label)
+      label2.string = tempNode.rawInfo.textObj.text
     }
     if (this.targetText1.tempState === 1 && this.targetText2.tempState === 1) {
       cc.audioEngine.play(this.successTip, false, 1)
+      levelDataModel.setCorrectState(this.sceneItem)
       this.scheduleOnce(() => {
         cc.director.loadScene(this.getNextScene())
       }, 1)
@@ -113,6 +125,7 @@ cc.Class({
   },
 
   onDestroy() {
+    this.animal.off(cc.Node.EventType.TOUCH_END, this.animalTouchEnd, this)
     this.wordItem1.off(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this)
     this.wordItem2.off(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this)
   }

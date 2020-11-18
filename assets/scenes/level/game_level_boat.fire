@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        330.1586535458831,
+        1155.2778886484411,
         0,
         0,
         0,
@@ -542,7 +542,7 @@
     "_id": "b8haVaaWlHQaZ7b6DdFBES"
   },
   {
-    "__type__": "cc.BoxCollider",
+    "__type__": "cc.PolygonCollider",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -552,15 +552,62 @@
     "tag": 0,
     "_offset": {
       "__type__": "cc.Vec2",
-      "x": -20,
-      "y": 200
+      "x": -65,
+      "y": 320
     },
-    "_size": {
-      "__type__": "cc.Size",
-      "width": 320,
-      "height": 350
-    },
-    "_id": "97Zi1ERuFDab+w4Cwz0Bom"
+    "points": [
+      {
+        "__type__": "cc.Vec2",
+        "x": -66,
+        "y": -304
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 230,
+        "y": -300
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 186,
+        "y": -204
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 165,
+        "y": -114
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 178,
+        "y": 52
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -50,
+        "y": 50
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -82,
+        "y": -2
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -117,
+        "y": -124
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -122,
+        "y": -197
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -100,
+        "y": -260
+      }
+    ],
+    "_id": "ebY8dv10ZEUIzQqOyI4qdu"
   },
   {
     "__type__": "cc.Node",
@@ -790,7 +837,7 @@
     "_id": "d7TdSeJAhJj7ZolUF7hfNl"
   },
   {
-    "__type__": "cc.BoxCollider",
+    "__type__": "cc.PolygonCollider",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -800,15 +847,62 @@
     "tag": 0,
     "_offset": {
       "__type__": "cc.Vec2",
-      "x": -20,
-      "y": 200
+      "x": -65,
+      "y": 320
     },
-    "_size": {
-      "__type__": "cc.Size",
-      "width": 320,
-      "height": 350
-    },
-    "_id": "d2RvnPA/ZGCIN+IKIWNq4L"
+    "points": [
+      {
+        "__type__": "cc.Vec2",
+        "x": -66,
+        "y": -304
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 230,
+        "y": -300
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 186,
+        "y": -204
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 165,
+        "y": -114
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 180,
+        "y": 54
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -50,
+        "y": 52
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -82,
+        "y": -2
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -117,
+        "y": -124
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -121,
+        "y": -184
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -103,
+        "y": -248
+      }
+    ],
+    "_id": "06+LjV7glCk5zxiwIo0dxA"
   },
   {
     "__type__": "cc.Node",
@@ -1622,7 +1716,9 @@
     },
     "_enabled": true,
     "parent": null,
-    "animal": null,
+    "animal": {
+      "__id__": 32
+    },
     "successTip": {
       "__uuid__": "6bebba1e-30ea-4e41-be69-8085c5705aae"
     },

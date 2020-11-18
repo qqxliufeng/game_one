@@ -200,11 +200,10 @@ cc.Class({
             this.doErrorAction(script)
           }
         },
-        playAudio: (text) => {
-          // const tmp = this.sceneItem.loreObject.list.find(it => {
-          //   it.text === text
-          // })
-          // playRemoteAudio(audioAddress + tmp.href)
+        playAudio: () => {
+          if (!addCollider) return
+          const tmp = this.sceneItem.loreObject.list.find(it => it.text === this.sceneItem.loreObject.text)
+          playRemoteAudio(audioAddress + tmp.href)
         }
       }
     })

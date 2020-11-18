@@ -524,8 +524,8 @@
         0,
         0,
         1,
-        0.728,
-        0.656,
+        1,
+        1,
         1
       ]
     },
@@ -560,8 +560,8 @@
     "_useOriginalSize": false,
     "_string": "",
     "_N$string": "",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -755,8 +755,8 @@
         0,
         0,
         1,
-        0.736,
-        0.592,
+        1,
+        1,
         1
       ]
     },
@@ -791,8 +791,8 @@
     "_useOriginalSize": false,
     "_string": "",
     "_N$string": "",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1566,7 +1566,9 @@
     },
     "_enabled": true,
     "parent": null,
-    "animal": null,
+    "animal": {
+      "__id__": 6
+    },
     "successTip": {
       "__uuid__": "f4f2ad41-f14e-4ced-9e0b-4b76c3b3e610"
     },

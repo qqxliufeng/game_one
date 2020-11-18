@@ -194,11 +194,11 @@ module.exports = {
       this._tempItem.bottomTextItems = Array.from(randomBottom([
         {
           index: 1,
-          textObj: this._tempItem.loreObject.list[0]
+          textObj: this._tempItem.loreObject.list[1]
         },
         {
           index: 2,
-          textObj: this._tempItem.loreObject.list[1]
+          textObj: this._tempItem.loreObject.list[2]
         }
       ]))
     }
