@@ -8,14 +8,14 @@ cc.Class({
     wordItem1: cc.Node,
     wordItem2: cc.Node,
     targetText1: cc.Node,
-    targetText2: cc.Node
+    targetText2: cc.Node,
+    typeName: cc.String
   },
 
   onLoad() {
     cc.director.getCollisionManager().enabled = true
     cc.director.getCollisionManager().enabledDebugDraw = true
     this.bootStart()
-    console.log(levelDataModel._dataList)
   },
 
   init() {
@@ -23,6 +23,60 @@ cc.Class({
     this.initWordItem(this.wordItem1)
     this.initWordItem(this.wordItem2)
     this.setConfig()
+    const startOffset = {
+      width: 150,
+      height: -150
+    }
+    const endOffset = {
+      width: 0,
+      height: 0
+    }
+    const nextStart = this.wordItem1.getPosition()
+    const nextEnd = this.targetText1.getPosition()
+    switch (this.typeName) {
+      case 'bear':
+        endOffset.width = 50
+        endOffset.height = -50
+        break
+      case 'boat':
+        endOffset.width = 50
+        endOffset.height = -50
+        break
+      case 'car':
+        startOffset.width = 0
+        startOffset.height = -300
+        endOffset.width = -100
+        endOffset.height = -100
+        nextEnd.x = nextEnd.x - 20
+        nextEnd.y = nextEnd.y + 120
+        break
+      case 'draw':
+        startOffset.width = 200
+        startOffset.height = -300
+        endOffset.width = 50
+        endOffset.height = -50
+        break
+      case 'train':
+        startOffset.width = 200
+        startOffset.height = -300
+        endOffset.width = -200
+        endOffset.height = -50
+        nextEnd.x = nextEnd.x - 20
+        nextEnd.y = nextEnd.y + 300
+        break
+      case 'windmills':
+        endOffset.width = 50
+        endOffset.height = -50
+        break
+    }
+    this.initAudioFinger({
+      parentObject: this.parent,
+      audioObject: this.animal,
+      startOffset,
+      endOffset,
+      nextStart,
+      nextEnd
+    })
   },
 
   getType() {
@@ -31,6 +85,15 @@ cc.Class({
 
   getDataModel() {
     return levelDataModel
+  },
+
+  initOriginalData(it) {
+    return {
+      loreObject: it.loreObject,
+      loreId: it.id,
+      indexOf: it.index_of,
+      type: 5
+    }
   },
 
   initWordItem(wordItem) {
@@ -90,7 +153,7 @@ cc.Class({
         cc.tween(e.target).to(1, { position: e.target.rawInfo.position, scale: e.target.rawInfo.scale }, { easing: 'elasticOut' }).start()
       }
     } else {
-      other.node.tempState = 0
+      other && (other.node.tempState = 0)
       cc.tween(e.target).to(1, { position: e.target.rawInfo.position, scale: e.target.rawInfo.scale }, { easing: 'elasticOut' }).start()
     }
   },
@@ -109,9 +172,35 @@ cc.Class({
     if (this.targetText1.tempState === 1 && this.targetText2.tempState === 1) {
       cc.audioEngine.play(this.successTip, false, 1)
       levelDataModel.setCorrectState(this.sceneItem)
-      this.scheduleOnce(() => {
-        cc.director.loadScene(this.getNextScene())
-      }, 1)
+      const temp = levelDataModel.getItemModel()
+      if (temp) {
+        this.scheduleOnce(() => {
+          cc.director.loadScene(this.getNextScene())
+        }, 1)
+      } else {
+        getLoading().then((controller) => {
+          post({
+            url: record,
+            data: levelDataModel.generatorReport()
+          }).then(res => {
+            controller.close()
+            if (res.code === 200) {
+              getSuccessDialog().then(controller => {
+                controller.init({
+                  callback: () => {
+                    controller.node.parent.active = false
+                  }
+                })
+              })
+            } else {
+              showToast(res.msg)
+            }
+          }).catch(error => {
+            controller.close()
+            showToast(error.message)
+          })
+        })
+      }
     }
   },
 

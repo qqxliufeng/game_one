@@ -132,6 +132,41 @@ module.exports = cc.Class({
   },
 
   /**
+   * 初始化要发音的手指提示
+   */
+  initAudioFinger({ parentObject,
+    audioObject,
+    startOffset = { width: 0, height: 0 },
+    endOffset = { width: 0, height: 0 },
+    nextStart,
+    nextEnd }) {
+    if (!audioObject || !parentObject) return
+    cc.resources.load('prefab/finger_tip', cc.Prefab, (error, asset) => {
+      if (error) return
+      const fingerTip = cc.instantiate(asset)
+      parentObject.addChild(fingerTip)
+      const fingerController = fingerTip.getComponent('finger')
+      const audioObjectPosition = audioObject.getPosition()
+      this.showFingerCount = 1
+      fingerController.init({
+        startPosition: cc.v2(audioObjectPosition.x + startOffset.width, audioObjectPosition.y + startOffset.height),
+        endPosition: cc.v2(audioObjectPosition.x + endOffset.width, audioObjectPosition.y + endOffset.height)
+      })
+      parentObject.on(cc.Node.EventType.TOUCH_START, () => {
+        if (this.showFingerCount >= 2) {
+          fingerTip.active === true && (fingerTip.active = false)
+        } else {
+          this.showFingerCount++
+          fingerController.init({
+            startPosition: cc.v2(nextStart.x, nextStart.y),
+            endPosition: cc.v2(nextEnd.x, nextEnd.y)
+          })
+        }
+      })
+    })
+  },
+
+  /**
    * 当操作选项单词之后的回调
    * @param {*} word 
    * @param {*} script 

@@ -1715,7 +1715,9 @@
       "__id__": 39
     },
     "_enabled": true,
-    "parent": null,
+    "parent": {
+      "__id__": 5
+    },
     "animal": {
       "__id__": 32
     },
@@ -1740,6 +1742,7 @@
     "targetText2": {
       "__id__": 12
     },
+    "typeName": "boat",
     "_id": "damq5dbUhAy7XNKsoaoOI3"
   }
 ]

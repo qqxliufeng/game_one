@@ -1479,7 +1479,9 @@
       "__id__": 34
     },
     "_enabled": true,
-    "parent": null,
+    "parent": {
+      "__id__": 5
+    },
     "animal": {
       "__id__": 6
     },
@@ -1504,6 +1506,7 @@
     "targetText2": {
       "__id__": 13
     },
+    "typeName": "bear",
     "_id": "5fXRCGT1BHUYnXIhKkuMHy"
   }
 ]
