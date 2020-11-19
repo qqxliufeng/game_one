@@ -1,5 +1,5 @@
 const Base = require("../utils/Base")
-const { WORD_ITEM_WIDTH, getReviewScene, baseDataModel } = require("../utils/globals")
+const { WORD_ITEM_WIDTH, getReviewScene, baseDataModel, getStudyScene } = require("../utils/globals")
 const PRE_FAB_NAME = 'prefab/word_item'
 
 module.exports = cc.Class({
@@ -59,5 +59,9 @@ module.exports = cc.Class({
 
   getNextScene() {
     return getReviewScene()
+  },
+
+  successDialogCallback(controller) {
+    cc.director.loadScene(getStudyScene())
   }
 })

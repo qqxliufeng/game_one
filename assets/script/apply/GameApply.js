@@ -1,5 +1,5 @@
 const Base = require("../utils/Base")
-const { WORD_PRE_FAB_NAME, getSpriteSize, applyDataModel, getApplyScene } = require("../utils/globals")
+const { WORD_PRE_FAB_NAME, getSpriteSize, applyDataModel, getApplyScene, getLevelScene } = require("../utils/globals")
 
 const APPLY_GAME_ITEM_LIST = [
   {
@@ -243,5 +243,9 @@ cc.Class({
 
   getNextScene() {
     return getApplyScene()
+  },
+
+  successDialogCallback() {
+    cc.director.loadScene(getLevelScene())
   }
 });

@@ -20,12 +20,13 @@ cc.Class({
       this.setScale()
       this.defaultScale = params.scale
       this.defaultPosition = params.position
-      this.wordAudioPath = params.wordAudioPath || 'http://192.168.1.104:7456/app/editor/static/img/make.mp3'
+      this.wordAudioPath = params.wordAudioPath
       this.node.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this)
     }, 0)
   },
 
   refresh(params) {
+    this.wordAudioPath = params.wordAudioPath
     this.scheduleOnce(() => {
       this.setTextFont(params ? params.textFont : null)
       switch (params.type) {
@@ -50,7 +51,7 @@ cc.Class({
   },
 
   touchEnd() {
-    playRemoteAudio(this.wordAudioPath)
+    playRemoteAudio(audioAddress + this.wordAudioPath)
   },
 
   setPosition(position = new cc.v2(0, 0)) {

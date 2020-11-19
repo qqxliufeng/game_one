@@ -1,3 +1,5 @@
+const { getGameScene } = require("../utils/globals");
+
 // 每行的个数
 const ROW_WORD_COUNT = 3
 
@@ -162,6 +164,7 @@ cc.Class({
             playRemoteAudio(audioAddress + tempItem.href)
             this.bigWord.refresh({
               type: item.type,
+              wordAudioPath: tempItem.href,
               textFont: {
                 label: tempItem.text
               }
@@ -189,6 +192,7 @@ cc.Class({
                   controller.init({
                     callback: () => {
                       controller.node.parent.active = false
+                      cc.director.loadScene(getGameScene())
                     }
                   })
                 })

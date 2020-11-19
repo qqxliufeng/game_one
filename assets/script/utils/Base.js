@@ -241,6 +241,7 @@ module.exports = cc.Class({
               controller.init({
                 callback: () => {
                   controller.node.parent.active = false
+                  this.successDialogCallback && this.successDialogCallback(controller)
                 }
               })
             })

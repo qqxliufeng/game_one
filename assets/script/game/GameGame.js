@@ -1,5 +1,5 @@
 const Base = require("../utils/Base")
-const { WORD_ITEM_WIDTH, baseDataModel, getGameScene } = require("../utils/globals")
+const { WORD_ITEM_WIDTH, baseDataModel, getGameScene, getApplyScene } = require("../utils/globals")
 
 const PRE_FAB_NAME = 'prefab/word_item'
 
@@ -258,5 +258,9 @@ cc.Class({
 
   getNextScene() {
     return getGameScene()
-  }
+  },
+
+  successDialogCallback() {
+    cc.director.loadScene(getApplyScene())
+  },
 });
