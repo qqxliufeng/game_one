@@ -13,26 +13,26 @@ cc.Class({
     const urlParams = new URLSearchParams(location.search)
     console.log(window.location.search)
     const gameType = urlParams.get('type') || 'study'
-    // let sceneName = ''
-    // switch (gameType) {
-    //   case 'review':
-    //     sceneName = getReviewScene()
-    //     break
-    //   case 'study':
-    //     sceneName = getStudyScene()
-    //     break
-    //   case 'game':
-    //     sceneName = getGameScene()
-    //     break
-    //   case 'apply':
-    //     sceneName = getApplyScene()
-    //     break
-    //   case 'level':
-    //     sceneName = getLevelScene()
-    //     break
-    //   default:
-    //     sceneName = getStudyScene()
-    // }
-    // cc.director.loadScene(sceneName)
+    let sceneName = ''
+    switch (gameType) {
+      case 'review':
+        sceneName = getReviewScene()
+        break
+      case 'study':
+        sceneName = getStudyScene()
+        break
+      case 'game':
+        sceneName = getGameScene()
+        break
+      case 'apply':
+        sceneName = getApplyScene()
+        break
+      case 'level':
+        sceneName = getLevelScene()
+        break
+      default:
+        sceneName = getStudyScene()
+    }
+    cc.director.loadScene(sceneName)
   }
 });

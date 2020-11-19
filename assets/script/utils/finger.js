@@ -2,10 +2,11 @@
 cc.Class({
   extends: cc.Component,
 
-  init({ startPosition, endPosition }) {
+  init({ startPosition, endPosition, rotation = 0 }) {
     this.reset()
     this.node.position = startPosition
     this.node.active = true
+    this.node.angle = rotation
     this.tween = cc.tween(this.node)
       .to(1.5, { position: endPosition })
       .call(() => {

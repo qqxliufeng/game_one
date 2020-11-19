@@ -44,7 +44,20 @@ module.exports = cc.Class({
             height
           }, sprite, leftText)
         })
-        this.initFinger(x1, y1)
+        // this.initFinger(x1, y1)
+        const box = this.animal.getComponent(cc.BoxCollider)
+        const desPosition = box.offset
+        this.initAudioFinger({
+          parentObject: this.parent,
+          audioObject: this.animal,
+          startOffset: { width: 0, height: 300 },
+          endOffset: { width: 0, height: 200 },
+          nextStart: { x: x1, y: y1 },
+          nextEnd: {
+            x: desPosition.x * this.animal.scaleX + this.animal.position.x,
+            y: desPosition.y * this.animal.scaleY + this.animal.position.y
+          }
+        })
         cc.resources.load(PRE_FAB_NAME, cc.Prefab, (error, assets) => {
           this.initPrefab(cc.instantiate(assets), {
             x: (this.node.x + this.parent.width / 2) - sprite.getRect().width / 2,

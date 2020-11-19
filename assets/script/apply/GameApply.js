@@ -122,9 +122,14 @@ cc.Class({
         const wordItem = cc.instantiate(assets)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
           const size = getSpriteSize(spriteFrame, spriteFrame.getRect().width * this.itemNameInfo.scale)
+          const x = everyScreenWidth / 2 + everyScreenWidth * i - this.parent.width / 2
+          const y = this.parent.y + this.parent.height / 2 - this.parent.height / 5
+          if (i === (this.sceneItem.indexOf - 1)) {
+            this.tempItem = wordItem
+          }
           this.initPrefab(wordItem, this.sceneItem.topTextItems[i], {
-            x: everyScreenWidth / 2 + everyScreenWidth * i - this.parent.width / 2,
-            y: this.parent.y + this.parent.height / 2 - this.parent.height / 5,
+            x,
+            y,
             width: size.width,
             height: size.height,
             scale: this.itemNameInfo.scale
@@ -140,20 +145,34 @@ cc.Class({
   initBottomSprite() {
     const everyScreenWidth = this.parent.width / BOTTOM_ITEM_LINE_COUNT
     const tempArray = Array.from(this.sceneItem.bottomTextItems)
-    for (let i = 0; i < this.sceneItem.bottomTextItems.size; i++) {
+    for (let i = 0; i < tempArray.length; i++) {
       cc.resources.load(WORD_PRE_FAB_NAME, cc.Prefab, (error, assets) => {
         const wordItem = cc.instantiate(assets)
         cc.resources.load('texture/apply/pic_yy_' + this.itemNameInfo.name, cc.SpriteFrame, (error, spriteFrame) => {
           const size = getSpriteSize(spriteFrame, spriteFrame.getRect().width * this.itemNameInfo.scale)
           const div = parseInt(i / BOTTOM_ITEM_LINE_COUNT)
           const mod = i % BOTTOM_ITEM_LINE_COUNT
+          const x = everyScreenWidth / 2 + everyScreenWidth * mod - this.parent.width / 2
+          const y = (this.parent.y - this.parent.height / 2 + this.parent.height / 5) + div * (size.height + 150)
           this.initPrefab(wordItem, tempArray[i].text, {
-            x: everyScreenWidth / 2 + everyScreenWidth * mod - this.parent.width / 2,
-            y: (this.parent.y - this.parent.height / 2 + this.parent.height / 5) + div * (size.height + 150),
+            x,
+            y,
             width: size.width,
             height: size.height,
             scale: this.itemNameInfo.scale * 1.5
           }, spriteFrame, true, 'WordItem')
+          if (i === tempArray.length - 1 && this.tempItem) {
+            this.scheduleOnce(() => {
+              this.initAudioFinger({
+                parentObject: this.parent,
+                audioObject: this.tempItem,
+                startOffset: { width: 0, height: 200 },
+                endOffset: { width: 0, height: this.tempItem.height },
+                nextStart: { x, y },
+                nextEnd: { x: this.tempItem.x, y: this.tempItem.y }
+              })
+            })
+          }
         })
       })
     }

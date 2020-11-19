@@ -23,6 +23,14 @@ const GAME_ITEM_LIST = [
     font: {
       x: 0,
       y: 0
+    },
+    fingerStartOffset: {
+      width: 80,
+      height: 500
+    },
+    fingerEndOffset: {
+      width: 80,
+      height: 300
     }
   },
   {
@@ -42,6 +50,14 @@ const GAME_ITEM_LIST = [
     font: {
       x: 0,
       y: 0
+    },
+    fingerStartOffset: {
+      width: -100,
+      height: 600
+    },
+    fingerEndOffset: {
+      width: -100,
+      height: 400
     }
   },
   {
@@ -63,6 +79,14 @@ const GAME_ITEM_LIST = [
     font: {
       x: 40,
       y: -50
+    },
+    fingerStartOffset: {
+      width: 50,
+      height: 450
+    },
+    fingerEndOffset: {
+      width: 50,
+      height: 250
     }
   },
   {
@@ -84,6 +108,14 @@ const GAME_ITEM_LIST = [
     font: {
       x: 0,
       y: -30
+    },
+    fingerStartOffset: {
+      width: 0,
+      height: 400
+    },
+    fingerEndOffset: {
+      width: 0,
+      height: 250
     }
   },
   {
@@ -103,6 +135,14 @@ const GAME_ITEM_LIST = [
     font: {
       x: 0,
       y: -30
+    },
+    fingerStartOffset: {
+      width: -150,
+      height: 500
+    },
+    fingerEndOffset: {
+      width: -150,
+      height: 350
     }
   },
   {
@@ -122,6 +162,14 @@ const GAME_ITEM_LIST = [
     font: {
       x: 0,
       y: -30
+    },
+    fingerStartOffset: {
+      width: -50,
+      height: 500
+    },
+    fingerEndOffset: {
+      width: -50,
+      height: 300
     }
   }
 ]
@@ -150,7 +198,6 @@ cc.Class({
 
   init() {
     this.initAnimal()
-    this.initFood()
   },
 
   getDataModel() {
@@ -188,6 +235,7 @@ cc.Class({
             boxCollider.offset = cc.v2(this.animal.width * this.itemInfo.animalOption.boxCollider.offsetX, this.animal.height * this.itemInfo.animalOption.boxCollider.offsetY)
             boxCollider.size = cc.size(boxCollider.size.width * this.itemInfo.animalOption.boxCollider.width, boxCollider.size.height * this.itemInfo.animalOption.boxCollider.height)
           }
+          this.initFood()
         })
       })
     })
@@ -206,7 +254,19 @@ cc.Class({
             const y = (this.parent.y - this.parent.height / 2) + sprite.getRect().height / 3 * 2
             this.initPrefab(cc.instantiate(assets), { x, y, width, height }, sprite, wordTextList[i])
             if (i === 1) {
-              this.initFinger(x, y)
+              const box = this.animal.getComponent(cc.BoxCollider)
+              const desPosition = box.offset
+              this.initAudioFinger({
+                parentObject: this.parent,
+                audioObject: this.animal,
+                startOffset: this.itemInfo.fingerStartOffset,
+                endOffset: this.itemInfo.fingerEndOffset,
+                nextStart: { x, y },
+                nextEnd: {
+                  x: desPosition.x * this.animal.scaleX + this.animal.position.x,
+                  y: desPosition.y * this.animal.scaleY + this.animal.position.y
+                }
+              })
             }
           })
         })

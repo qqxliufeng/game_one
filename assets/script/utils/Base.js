@@ -150,7 +150,8 @@ module.exports = cc.Class({
       this.showFingerCount = 1
       fingerController.init({
         startPosition: cc.v2(audioObjectPosition.x + startOffset.width, audioObjectPosition.y + startOffset.height),
-        endPosition: cc.v2(audioObjectPosition.x + endOffset.width, audioObjectPosition.y + endOffset.height)
+        endPosition: cc.v2(audioObjectPosition.x + endOffset.width, audioObjectPosition.y + endOffset.height),
+        rotation: 140
       })
       parentObject.on(cc.Node.EventType.TOUCH_START, () => {
         if (this.showFingerCount >= 2) {

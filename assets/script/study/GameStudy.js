@@ -148,6 +148,10 @@ cc.Class({
         }
         const x = everyScreenClient / 2 + mod * everyScreenClient - (this.parent.width / 2)
         const y = (this.parent.height / 2) - div * (size.height + VERTICAL_SPACE) - size.height - top
+        if (!this.isInitFinger) {
+          this.isInitFinger = true
+          this.initFinger({ x: x + 100, y: y - 100 }, { x: x + 50, y: y - 50 })
+        }
         const position = new cc.v2(x, y)
         script.init({
           sprite,
@@ -201,6 +205,28 @@ cc.Class({
           }
         })
         index++
+      })
+    })
+  },
+
+  /**
+   * 初始化引导手指
+   * @param {*} x 
+   * @param {*} y 
+   */
+  initFinger(startPosition, endPosition) {
+    if (!this.parent) return
+    cc.resources.load('prefab/finger_tip', cc.Prefab, (error, asset) => {
+      if (error) return
+      const fingerTip = cc.instantiate(asset)
+      this.parent.addChild(fingerTip)
+      const fingerController = fingerTip.getComponent('finger')
+      fingerController.init({
+        startPosition: cc.v2(startPosition.x, startPosition.y),
+        endPosition: cc.v2(endPosition.x, endPosition.y)
+      })
+      this.parent.on(cc.Node.EventType.TOUCH_START, () => {
+        fingerTip.active === true && (fingerTip.active = false)
       })
     })
   },
