@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        329.9475342012994,
+        562.9165124598851,
         0,
         0,
         0,
@@ -618,6 +618,9 @@
     "errorTip": {
       "__uuid__": "28896bd3-91d4-42f3-9576-ac8a401731c7"
     },
+    "sceneItem": null,
+    "optionItem": null,
+    "corroctItem": null,
     "_id": "02cqSu7XRGor51kJMjHqDn"
   }
 ]

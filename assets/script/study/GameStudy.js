@@ -227,7 +227,7 @@ cc.Class({
       })
       this.parent.on(cc.Node.EventType.TOUCH_START, () => {
         fingerTip.active === true && (fingerTip.active = false)
-      })
+      }, this)
     })
   },
 
@@ -256,9 +256,5 @@ cc.Class({
       item.status = 0
       return item
     })
-  },
-
-  onDestroy() {
-    cc.resources.releaseAll()
   }
 });

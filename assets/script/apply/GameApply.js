@@ -161,17 +161,19 @@ cc.Class({
             height: size.height,
             scale: this.itemNameInfo.scale * 1.5
           }, spriteFrame, true, 'WordItem')
-          if (i === tempArray.length - 1 && this.tempItem) {
+          if (i === tempArray.length - 1) {
             this.scheduleOnce(() => {
-              this.initAudioFinger({
-                parentObject: this.parent,
-                audioObject: this.tempItem,
-                startOffset: { width: 0, height: 200 },
-                endOffset: { width: 0, height: this.tempItem.height },
-                nextStart: { x, y },
-                nextEnd: { x: this.tempItem.x, y: this.tempItem.y }
-              })
-            })
+              if (this.tempItem) {
+                this.initAudioFinger({
+                  parentObject: this.parent,
+                  audioObject: this.tempItem,
+                  startOffset: { width: 0, height: 200 },
+                  endOffset: { width: 0, height: 100 },
+                  nextStart: { x, y },
+                  nextEnd: { x: this.tempItem.x + 50, y: this.tempItem.y - 50 }
+                })
+              }
+            }, 0.5)
           }
         })
       })

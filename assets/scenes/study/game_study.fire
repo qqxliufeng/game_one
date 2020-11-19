@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        564.648563267454,
+        562.9165124598851,
         0,
         0,
         0,
@@ -474,12 +474,6 @@
     "parent": {
       "__id__": 5
     },
-    "animal": null,
-    "successTip": null,
-    "errorTip": null,
-    "sceneItem": null,
-    "optionItem": null,
-    "corroctItem": null,
     "bigWord": null,
     "_id": "77gru9B4xCNb/4uYnO2G2+"
   }
