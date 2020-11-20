@@ -212,6 +212,14 @@ cc.Class({
           if (isCollided) {
             if (other.node.text === this.sceneItem.loreObject.text) {
               this.playSuccessTip(word)
+              const script = this.tempItem.getComponent('TopWordItem')
+              script.setTextParams({
+                label: this.sceneItem.loreObject.text,
+                fontSize: this.itemNameInfo.font.fontSize,
+                color: this.itemNameInfo.font.color,
+                x: this.itemNameInfo.font.x,
+                y: this.itemNameInfo.font.y
+              })
               this.doSuccessAction()
             } else {
               this.playErrorTip(script)
