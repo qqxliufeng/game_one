@@ -153,7 +153,7 @@ module.exports = cc.Class({
         endPosition: cc.v2(audioObjectPosition.x + endOffset.width, audioObjectPosition.y + endOffset.height),
         rotation: 140
       })
-      parentObject.on(cc.Node.EventType.TOUCH_END, () => {
+      parentObject.on(cc.Node.EventType.TOUCH_START, () => {
         if (this.showFingerCount >= 2) {
           fingerTip.active === true && (fingerTip.active = false)
         } else {

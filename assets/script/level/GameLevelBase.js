@@ -1,5 +1,5 @@
 const Base = require("../utils/Base");
-const { levelDataModel, getLevelScene } = require("../utils/globals");
+const { levelDataModel, getLevelScene, getReviewScene } = require("../utils/globals");
 
 cc.Class({
   extends: Base,
@@ -187,8 +187,12 @@ cc.Class({
             if (res.code === 200) {
               getSuccessDialog().then(controller => {
                 controller.init({
+                  spriteFrame: this.spriteFrame,
+                  nextButtonTip: '继续学习下一课',
+                  successTip: '本节课程已经全部学习',
                   callback: () => {
                     controller.node.parent.active = false
+                    this.successDialogCallback && this.successDialogCallback(controller)
                   }
                 })
               })
@@ -211,6 +215,10 @@ cc.Class({
 
   getNextScene() {
     return getLevelScene()
+  },
+
+  successDialogCallback() {
+    cc.director.loadScene(getReviewScene())
   },
 
   onDestroy() {

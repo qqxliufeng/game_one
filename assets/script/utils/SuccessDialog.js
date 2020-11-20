@@ -21,8 +21,9 @@ cc.Class({
     this.nextButton.node.on('click', this.callback, this)
   },
 
-  init({ imageSrc = '', successTip = '真棒，本关内容已全部学习完成', nextButtonTip = '开启下一关', callback = null }) {
+  init({ spriteFrame = null, successTip = '真棒，本关内容已全部学习完成', nextButtonTip = '开启下一关', callback = null }) {
     successTip && (this.tip.string = successTip)
+    spriteFrame && (this.image.spriteFrame = spriteFrame)
     if (nextButtonTip) {
       const label = this.nextButton.node.getChildByName('Background').getChildByName('Label').getComponent(cc.Label)
       label.string = nextButtonTip
