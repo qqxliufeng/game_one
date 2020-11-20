@@ -163,6 +163,7 @@ cc.Class({
             position: item.position
           },
           clickCallBack: (word) => {
+            (this.fingerTip && this.fingerTip.active === true) && (this.fingerTip.active = false)
             const tempItem = this.tempListWord.find(it => it.text === word)
             tempItem.status = 1
             playRemoteAudio(audioAddress + tempItem.href)
@@ -218,15 +219,15 @@ cc.Class({
     if (!this.parent) return
     cc.resources.load('prefab/finger_tip', cc.Prefab, (error, asset) => {
       if (error) return
-      const fingerTip = cc.instantiate(asset)
-      this.parent.addChild(fingerTip)
-      const fingerController = fingerTip.getComponent('finger')
+      this.fingerTip = cc.instantiate(asset)
+      this.parent.addChild(this.fingerTip)
+      const fingerController = this.fingerTip.getComponent('finger')
       fingerController.init({
         startPosition: cc.v2(startPosition.x, startPosition.y),
         endPosition: cc.v2(endPosition.x, endPosition.y)
       })
       this.parent.on(cc.Node.EventType.TOUCH_START, () => {
-        fingerTip.active === true && (fingerTip.active = false)
+        this.fingerTip.active === true && (this.fingerTip.active = false)
       }, this)
     })
   },

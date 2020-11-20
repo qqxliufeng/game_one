@@ -17,6 +17,7 @@ module.exports = cc.Class({
     const wordText = this.randomText(this.sceneItem.loreObject.list)
     const path = this.getAudioPath().href
     this.animal.on(cc.Node.EventType.TOUCH_END, () => {
+      console.log('点击animal')
       playRemoteAudio(audioAddress + path)
     }, this)
     this.initWordItem(this.getSpriteName(), wordText[0].text, wordText[1].text)

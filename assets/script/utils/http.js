@@ -1,3 +1,8 @@
+document.addEventListener('WeixinJSBridgeReady', function () {
+  setTimeout(() => {
+    cc.director.emit('wxload')
+  }, 1000)
+})
 
 /**
  * 加载进度对话框
@@ -56,7 +61,10 @@ function getSuccessDialog() {
   })
 }
 
-var baseURL = 'http://segeg.free.idcfengye.com'
+// var baseURL = 'http://segeg.free.idcfengye.com'
+var baseURL = 'http://syadmin.qjia.tech/user-api/'
+
+// localStorage.setItem('token', 'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjlkODlkMWEyLWVmMGQtNDcxZi1hOTI4LWE4NDMzMzVmNGY1YiJ9.YkKee3U_rQjtXwaM2FyvaLhpcJIQgWqdCybVyKm4aFl1q8t6udaqnfiPHXvQl_q0JdvXcofyGbqudN9DGvDmTw')
 
 function encode(val) {
   return encodeURIComponent(val).
