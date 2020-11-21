@@ -98,9 +98,11 @@ cc.Class({
         this.parent1.active = false
         this.sceneName = getStudyScene()
     }
-    cc.director.once('wxload', () => {
-      this.playAudio()
-    }, this)
+    if (isiOS) {
+      cc.director.once('wxload', () => {
+        this.playAudio()
+      }, this)
+    }
   },
 
   startTween() {
@@ -113,7 +115,7 @@ cc.Class({
     cc.resources.load('audio/' + this.audioName, cc.AudioClip, (error, audioClip) => {
       const id = cc.audioEngine.play(audioClip, false, 1)
       cc.audioEngine.setFinishCallback(id, () => {
-        cc.director.loadScene(this.sceneName)
+        this.sceneName && cc.director.loadScene(this.sceneName)
       })
     })
   }

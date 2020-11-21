@@ -1,5 +1,3 @@
-const apiAddress = 'http://segeg.free.idcfengye.com'
-
 const audioAddress = 'http://syadmin.qjia.tech'
 
 const gameModule = '/appGame/'

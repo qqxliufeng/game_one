@@ -4,6 +4,10 @@ document.addEventListener('WeixinJSBridgeReady', function () {
   }, 1000)
 })
 
+var isAndroid = navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Adr') > -1; //android终端
+var isiOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+
 /**
  * 加载进度对话框
  */
